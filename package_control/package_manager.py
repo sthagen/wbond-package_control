@@ -30,7 +30,7 @@ from .upgraders.hg_upgrader import HgUpgrader
 from .package_io import read_package_file
 from .providers import CHANNEL_PROVIDERS, REPOSITORY_PROVIDERS
 from .settings import pc_settings_filename, load_list_setting, save_list_setting
-from . import distinfo, library, sys_path, text
+from . import distinfo, library, pep440, sys_path, text
 from . import __version__
 
 
@@ -1643,14 +1643,14 @@ class PackageManager():
                 installed_version = None
 
             if installed_version:
-                installed_version = library.PEP440Version(installed_version)
+                installed_version = pep440.PEP440Version(installed_version)
 
             library_releases = info.get('releases', [])
             library_release = library_releases[0] if library_releases else {}
 
             available_version = library_release.get('version')
             if available_version:
-                available_version = library.PEP440Version(available_version)
+                available_version = pep440.PEP440Version(available_version)
 
             install_library = False
             if not installed_version:
