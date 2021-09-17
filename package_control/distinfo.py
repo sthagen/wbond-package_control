@@ -426,6 +426,11 @@ class DistInfoDir:
         with open(self.abs_path('METADATA'), 'r', encoding='utf-8') as fobj:
             entries = {}
             for line in fobj.readlines():
+                # After all "header" fields, there is a blank line and then
+                # the contents of the readme can be included. We don't care
+                # about the readme, so we stop.
+                if not len(line.strip()):
+                    break
                 key, value = line.split(': ')
                 entries[key.strip().lower()] = value.strip()
             return entries
