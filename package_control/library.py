@@ -8,7 +8,11 @@ from . import sys_path
 from . import distinfo
 from .clear_directory import delete_directory
 
-BUILTIN_LIBRARIES = {"3.3": {}, "3.8": {"enum", "pathlib", "typing"}}
+BUILTIN_LIBRARIES = {
+    "3.3": {},
+    "3.8": {"enum", "pathlib", "typing"},
+    "3.13": {"enum", "pathlib", "typing"},
+}
 """3rd-party libraries, which are part of stdlib as of certain python version"""
 
 DEPENDENCY_NAME_MAP = {
@@ -270,9 +274,15 @@ def convert_dependency(dependency_path, python_version, name, version, descripti
 
     # include st4 dependencies on ST4, only
     if int(sublime.version()) >= 4000:
+        # platform / arch specific releases must exactly match requested python version
+        # as they are expected to contain compiled libraries
         install_rel_paths.append(("st4_arch", "st4_py{}_{}_{}".format(py, plat, arch)))
         install_rel_paths.append(("st4_plat", "st4_py{}_{}".format(py, plat)))
-        install_rel_paths.append(("st4_py", "st4_py{}".format(py)))
+        # pure python releases releases for python 3.13+
+        if python_version == "3.13":
+            install_rel_paths.append(("st4_py", "st4_py313".format()))
+        # pure python releases for python 3.8+
+        install_rel_paths.append(("st4_py", "st4_py38".format()))
         install_rel_paths.append(("st4", "st4"))
 
     # platform/arch specific st3 dependencies are most likely only compatible with python 3.3

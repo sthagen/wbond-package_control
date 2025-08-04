@@ -3,14 +3,7 @@
 	// The repositories from these channels are placed in order after the
 	// repositories from the "repositories" setting
 	"channels": [
-		// channel_v4 for python 3.8 compatible libraries to enable plugins
-		// to migrate to python 3.8 until packagecontrol.io supports new scheme.
-		// Note: Must always be located before default channel in the list!
-		// Repo: https://github.com/packagecontrol/channel
-		"https://packagecontrol.github.io/channel/channel_v4.json",
-		// default channel for packages
-		// Repo: https://github.com/wbond/package_control_channel
-		"https://packagecontrol.io/channel_v3.json"
+		"https://packages.sublimetext.io/channel.json"
 	],
 
 	// A list of URLs that contain a packages JSON file or point to a
@@ -116,7 +109,8 @@
 	"timeout": 30,
 
 	// The number of seconds to cache repository and package info for
-	"cache_length": 300,
+	// No HTTP requests are made for responses with up to this age.
+	"cache_length": 600,
 
 	// An HTTP proxy server to use for requests. Not normally used on Windows
 	// since the system proxy configuration is utilized via WinINet.
@@ -138,6 +132,8 @@
 	"http_cache": true,
 
 	// Number of seconds to cache HTTP responses for, defaults to one week
+	// If a local cache entry hasn't been requested within this time span,
+	// it will be removed from storage.
 	"http_cache_length": 604800,
 
 	// User agent for HTTP requests. If "%s" is present, will be replaced

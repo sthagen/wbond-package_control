@@ -16,7 +16,12 @@ __default_packages_path = os.path.join(os.path.dirname(__executable_path), 'Pack
 if not os.path.isdir(__default_packages_path):
     # Fall back to detecting the path using the location of the module
     import Default.sort as default_module
-    __default_packages_path = os.path.dirname(os.path.dirname(default_module.__file__))
+    try:
+        # python 3.8+
+        __default_packages_path = os.path.dirname(os.path.dirname(default_module.__spec__.origin))
+    except (AttributeError, NameError):
+        # python 3.3
+        __default_packages_path = os.path.dirname(os.path.dirname(default_module.__file__))
 
 if not os.path.isdir(__default_packages_path):
     raise FileNotFoundError('Default Packages')
@@ -28,7 +33,12 @@ if not os.path.isdir(__default_packages_path):
 # {data_dir}/Installed Packages/Package Control.sublime-package/package_control/sys_path.py
 # When loaded as unpacked package, __file__ ends up being
 # {data_dir}/Packages/Package Control/package_control/sys_path.py
-__data_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+try:
+    # python 3.8+
+    __data_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__spec__.origin))))
+except (AttributeError, NameError):
+    # python 3.3
+    __data_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 # Determine extracted packages path
 __packages_path = os.path.join(__data_path, 'Packages')
@@ -77,6 +87,7 @@ __python_libs_cache_path = None
 __python_packages_cache_path = None
 __trash_path = os.path.join(__data_path, "Trash")
 __user_config_path = os.path.join(__packages_path, 'User')
+__is_portable = __data_path == os.path.join(os.path.dirname(__executable_path), "Data")
 
 
 def add_dependency(name, first=False):
@@ -89,6 +100,16 @@ def add_dependency(name, first=False):
     2. Some plugins such as AutomaticPackageReloader make use of it, too.
     """
     pass
+
+
+def python_versions():
+    """
+    Return a tuple of supported python versions.
+
+    returns
+        A tuple of e.g. ("3.3", "3.8")
+    """
+    return tuple(lib_paths())
 
 
 def cache_path():
@@ -130,12 +151,27 @@ def lib_paths():
     try:
         return lib_paths.cache
     except AttributeError:
-        lib_paths.cache = {
-            "3.3": os.path.join(__data_path, "Lib", "python33"),
-            "3.8": os.path.join(__data_path, "Lib", "python38")
-        } if int(sublime.version()) >= 4000 else {
-            "3.3": os.path.join(__data_path, "Lib", "python3.3")
-        }
+        st_version = int(sublime.version())
+        if st_version > 4000:
+            root = os.path.dirname(__executable_path)
+            fext = ".exe" if sublime.platform() == "windows" else ""
+
+            settings = sublime.load_settings("Preferences.sublime-settings")
+            data = (
+                ("3.3", "python33", not settings.get('disable_plugin_host_3.3', False)),
+                ("3.8", "python38", True),
+                ("3.13", "python-3.13", True),
+            )
+            lib_paths.cache = {
+                py_ver: os.path.join(__data_path, "Lib", py_dir)
+                for py_ver, py_dir, enable in data
+                if enable and os.path.isfile(os.path.join(root, "plugin_host-" + py_ver + fext))
+            }
+
+        else:
+            lib_paths.cache = {
+                "3.3": os.path.join(__data_path, "Lib", "python3.3")
+            }
         return lib_paths.cache
 
 
@@ -193,11 +229,15 @@ def python_libs_cache_path(python_version):
 
     global __python_libs_cache_path
 
-    if not __python_libs_cache_path:
+    if __python_libs_cache_path is None:
+        if __is_portable:
+            root = os.path.join(cache_path(), '__pycache__', 'install', 'Data', 'Lib')
+        else:
+            root = os.path.join(cache_path(), '__pycache__', 'data', 'Lib')
+
         __python_libs_cache_path = {
-            "3.3": None,    # bytecode cache not supported
-            "3.8": os.path.join(
-                cache_path(), '__pycache__', 'install', 'Data', 'Lib', "python38")
+            py: None if py == "3.3" else os.path.join(root, os.path.basename(lib))
+            for py, lib in lib_paths().items()
         }
 
     return str(__python_libs_cache_path[python_version])
@@ -213,9 +253,15 @@ def python_packages_cache_path():
 
     global __python_packages_cache_path
 
-    if not __python_packages_cache_path:
-        __python_packages_cache_path = os.path.join(
-            cache_path(), '__pycache__', 'install', 'Data', 'Packages')
+    if __python_packages_cache_path is None:
+        if __is_portable:
+            __python_packages_cache_path = os.path.join(
+                cache_path(), '__pycache__', 'install', 'Data', 'Packages'
+            )
+        else:
+            __python_packages_cache_path = os.path.join(
+                cache_path(), '__pycache__', 'data', 'Packages'
+            )
 
     return str(__python_packages_cache_path)
 
@@ -230,7 +276,7 @@ def pc_cache_dir():
 
     global __package_control_cache_path
 
-    if not __package_control_cache_path:
+    if __package_control_cache_path is None:
         __package_control_cache_path = os.path.join(cache_path(), 'Package Control')
 
     return str(__package_control_cache_path)

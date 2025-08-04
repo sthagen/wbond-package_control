@@ -49,9 +49,11 @@ from .settings import load_list_setting, pc_settings_filename, preferences_filen
 from .upgraders.git_upgrader import GitUpgrader
 from .upgraders.hg_upgrader import HgUpgrader
 
+DEFAULT_CHANNEL = 'https://packages.sublimetext.io/channel.json'
+DEFAULT_CHANNEL_ST3 = 'https://packages.sublimetext.io/channel_st3.json'
 
-DEFAULT_CHANNEL = 'https://packagecontrol.io/channel_v3.json'
 OLD_DEFAULT_CHANNELS = set([
+    'https://packagecontrol.io/channel_v3.json',
     'https://packagecontrol.io/channel.json',
     'https://sublime.wbond.net/channel.json',
     'https://sublime.wbond.net/repositories.json'
@@ -261,20 +263,24 @@ class PackageManager:
         :return:
             A unicode string of "3.3" or "3.8"
         """
+        supported_python_versions = sys_path.python_versions()
 
-        if self.settings["disable_plugin_host_3.3"]:
-            return "3.8"
+        # package runs on latest available python version
+        if len(supported_python_versions) == 1 or package_name.lower() == "user":
+            return supported_python_versions[-1]
 
         python_version = read_package_file(package_name, ".python-version")
         if python_version:
             python_version = python_version.strip()
-            if python_version in sys_path.lib_paths():
+            # if requested version is supported, use it
+            if python_version in supported_python_versions:
                 return python_version
 
-        if package_name.lower() == "user" and self.settings['version'] > 4000:
-            return "3.8"
+            # otherwise, use latest python version
+            return supported_python_versions[-1]
 
-        return "3.3"
+        # package runs on earliest available python
+        return supported_python_versions[0]
 
     def get_version(self, package_name):
         """
@@ -472,6 +478,7 @@ class PackageManager:
             A list of all available repositories
         """
 
+        is_st3 = int(sublime.version()) < 4000
         cache_ttl = self.settings.get('cache_length', 300)
         channels = self.settings.get('channels', [])
         # create copy to prevent backlash to settings object due to being extended
@@ -481,16 +488,14 @@ class PackageManager:
         found_default = False
         for channel in channels:
             channel = channel.strip()
-
-            if re.match(r'https?://([^.]+\.)*package-control\.io', channel):
-                console_write('Removed malicious channel %s' % channel)
-                continue
-
-            if channel in OLD_DEFAULT_CHANNELS:
+            if channel.lower() in OLD_DEFAULT_CHANNELS:
                 if found_default:
                     continue
                 found_default = True
                 channel = DEFAULT_CHANNEL
+
+            if is_st3 and channel.lower() == DEFAULT_CHANNEL:
+                channel = DEFAULT_CHANNEL_ST3
 
             # Caches various info from channels for performance
             cache_key = channel + '.repositories'
@@ -1555,8 +1560,8 @@ class PackageManager:
                 except (KeyError):
                     unpack = False
 
+            supported_python_versions = sys_path.python_versions()
             python_version = "3.3"
-            supported_python_versions = set(sys_path.lib_paths().keys())
 
             try:
                 python_version_file = common_folder + '.python-version'
@@ -1588,31 +1593,6 @@ class PackageManager:
                         python_version = python_version_raw
             except (FileNotFoundError):
                 pass
-
-            library_names = release.get('libraries')
-            if not library_names:
-                # If libraries were not in the channel, try the package
-                try:
-                    lib_info_json = package_zip.read(common_folder + 'dependencies.json')
-                    lib_info = json.loads(lib_info_json.decode('utf-8'))
-                except (KeyError):
-                    lib_info = {}
-                except (ValueError):
-                    console_write(
-                        '''
-                        Failed to parse the dependencies.json for "%s"
-                        ''',
-                        package_name
-                    )
-                    return False
-
-                library_names = self.select_libraries(lib_info)
-
-            if library_names:
-                self.install_libraries(
-                    library.names_to_libraries(library_names, python_version),
-                    fail_early=False
-                )
 
             if package_name != old_package_name:
                 self.rename_package(old_package_name, package_name)

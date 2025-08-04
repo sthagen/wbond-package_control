@@ -2,6 +2,11 @@ import os
 import sublime
 import sys
 
+# Ensure compatibility with python 3.3 to 3.13+
+if sys.version_info > (3, 8):
+    __name__ = __spec__.name
+    __package__ = __spec__.parent
+
 # Clear module cache to force reloading all modules of this package.
 prefix1 = __package__ + "."     # sub modules of Package Control package
 prefix2 = "package_control."    # sub modules of package_control namespace package
@@ -25,14 +30,14 @@ has_packed = os.path.exists(get_installed_package_path('Package Control'))
 has_unpacked = regular_file_exists('Package Control', 'plugin.py')
 
 # Ensure least requires ST version
-if int(sublime.version()) < 3143:
+if int(sublime.version()) < 4000:
     message = text.format(
         '''
         Package Control
 
-        This package requires at least Sublime Text 3143.
+        This package requires Sublime Text 4107 or higher.
 
-        Please consider updating ST or remove Package Control.
+        Please consider updating ST or install Package Control 4.2.0.
         '''
     )
     sublime.error_message(message)
@@ -46,6 +51,19 @@ if int(sublime.version()) < 3143:
 
         from .package_control.bootstrap import disable_package_control
         disable_package_control()
+
+# Ensure running on python 3.8+
+elif sys.version_info[:2] < (3, 8):
+    message = text.format(
+        '''
+        Package Control
+
+        This package requires python 3.8 or higher.
+
+        Please consider updating ST or install Package Control 4.2.0.
+        '''
+    )
+    sublime.error_message(message)
 
 # Ensure the user has installed Package Control properly
 elif __package__ != 'Package Control':
