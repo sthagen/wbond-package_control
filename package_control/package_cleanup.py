@@ -65,6 +65,9 @@ class PackageCleanup(threading.Thread, PackageTaskRunner):
         # Clear trash
         clear_directory(sys_path.trash_path())
 
+        # Cleanup disabled python environments
+        self.cleanup_python_environments()
+
         # Scan through packages and complete pending operations
         found_packages = self.cleanup_pending_packages()
 
@@ -77,7 +80,7 @@ class PackageCleanup(threading.Thread, PackageTaskRunner):
         # Make sure we didn't accidentally ignore packages because something was
         # interrupted before it completed. Keep orphaned packages disabled which
         # are deferred to next start.
-        in_process = self.in_progress_packages() - removed_packages
+        in_process = self.in_process_packages() - removed_packages
         if in_process:
             console_write(
                 'Re-enabling %d package%s after a Package Control operation was interrupted...',
@@ -127,7 +130,7 @@ class PackageCleanup(threading.Thread, PackageTaskRunner):
 
         message = ''
 
-        in_process = self.in_progress_packages()
+        in_process = self.in_process_packages()
         if in_process:
             message += 'to complete pending package operations on "%s"' \
                 % '", "'.join(sorted(in_process, key=lambda s: s.lower()))
@@ -140,6 +143,36 @@ class PackageCleanup(threading.Thread, PackageTaskRunner):
 
         if message:
             show_message('Sublime Text needs to be restarted %s.' % message)
+
+    def cleanup_python_environments(self):
+        """
+        Remove library and cache folders of disabled or absent plugin_hosts.
+        """
+        if not self.manager.settings.get('remove_orphaned_enviornments'):
+            return
+
+        # actual library dir
+        libdir = os.path.join(sys_path.data_path(), "Lib", "python")
+        # portable cache dir
+        cache1 = os.path.join(sys_path.cache_path(), "__pycache__", "install", "Data", "Lib", "python")
+        # normal setup's cache dir
+        cache2 = os.path.join(sys_path.cache_path(), "__pycache__", "data", "Lib", "python")
+
+        supported_versions = sys_path.python_versions()
+        if "3.3" not in supported_versions:
+            # Python folder is re-created at each startup, hence just clear it for now.
+            clear_directory(libdir + "33")
+            # Python 3.3 itself doesn't support nor create compiled cache modules,
+            # ST's fallback mechanism might however have created some py38 or py313 cache files
+            # in those directories, which need to be cleared out.
+            delete_directory(cache1 + "33")
+            delete_directory(cache2 + "33")
+
+        if "3.8" not in supported_versions:
+            # if 3.8 is not supported it is not present, delete all folders
+            delete_directory(libdir + "38")
+            delete_directory(cache1 + "38")
+            delete_directory(cache2 + "38")
 
     def cleanup_pending_packages(self):
         """
