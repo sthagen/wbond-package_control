@@ -281,9 +281,6 @@ def convert_dependency(dependency_path, python_version, name, version, descripti
         # as they are expected to contain compiled libraries
         install_rel_paths.append(("st4_arch", "st4_py{}_{}_{}".format(py, plat, arch)))
         install_rel_paths.append(("st4_plat", "st4_py{}_{}".format(py, plat)))
-        # pure python releases for python 3.14+
-        if python_version == "3.14":
-            install_rel_paths.append(("st4_py", "st4_py314"))
         # pure python releases for python 3.8+
         install_rel_paths.append(("st4_py", "st4_py38"))
         install_rel_paths.append(("st4", "st4"))
