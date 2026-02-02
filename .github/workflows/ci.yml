@@ -12,7 +12,13 @@ on:
   workflow_dispatch:
 
 jobs:
+  cancel-previous-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: styfle/cancel-workflow-action@0.13.0
+
   test-all:
+    needs: cancel-previous-runs
     name: UnitTests on ST${{ matrix.st-version }} ${{ matrix.os }} ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -23,20 +29,12 @@ jobs:
           - ubuntu-latest
           - windows-latest
         arch:
-          - x86
           - x64
         st-version:
           - 3
           - 4
-        exclude:
-          - st-version: 4
-            arch: x86
-          - os: macos-latest
-            arch: x86
-          - os: ubuntu-latest
-            arch: x86
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: SublimeText/UnitTesting/actions/setup@v1
         with:
           package-name: Package Control
@@ -50,10 +48,11 @@ jobs:
           BB_PASS: ${{ secrets.BB_PASS }}
 
   lint:
+    needs: cancel-previous-runs
     name: Check Code Style
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: '3.8'
