@@ -160,6 +160,7 @@ def lib_paths():
             data = (
                 ("3.3", "python33", not settings.get('disable_plugin_host_3.3', False)),
                 ("3.8", "python38", True),
+                ("3.13", "python313", True),
                 ("3.14", "python314", True),
             )
             lib_paths.cache = {
