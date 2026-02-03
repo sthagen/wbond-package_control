@@ -1,0 +1,21 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Create and publish release
+    env:
+      GH_TOKEN: ${{ github.token }}
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+      - run: |
+          version=$(uv run --quiet python -c "from package_control import __version__;print(__version__)")
+          archive="Package Control.sublime-package"
+          git archive --format zip -o "$archive" master
+          gh release create --generate-notes --latest --target master -t "v$version" "$version" "$archive#$archive"
