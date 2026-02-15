@@ -1,36 +1,62 @@
 # Package Control
 
 The [Sublime Text](http://www.sublimetext.com) package manager. 
-It allows users to find, install and keep packages up to date.
+It allows users to find, install, and keep packages up to date.
 
 ## Installation
 
-To install:
+### Sublime Text Installer Tool
 
- - Open the command palette and type "Install Package Control"
- - or, use the menu *Tools > Install Package Control*
+The easiest way to install is ...
 
-Until Package Control 4.0 is available via packagecontrol.io, call the following command from Sublime Text's console.
+1. Open `Command Palette` using <kbd>Ctrl+Shift+P</kbd> or use menu item `Tools → Command Palette...`.
+2. Choose `Install Package Control`.
+3. Hit <kbd>Enter</kbd>.
 
-```py
-from urllib.request import urlretrieve;urlretrieve(url="https://github.com/wbond/package_control/releases/latest/download/Package.Control.sublime-package", filename=sublime.installed_packages_path() + '/Package Control.sublime-package')
-```
+> [!WARNING]
+>
+> 1. Package Control 3.4.1 is installed up to ST4200,
+> 	 which may fail loading on some modern OSs
+> 	 if required OpenSSL 1.1.1 libraries are missing.
+> 
+> 	 If that happens, please follow the manual install steps.
+>
+> 2. Run _Package Control: Upgrade/Overwrite All_
+>    or restart Sublime Text to update to Package Control 4.
+
+### Manual Install
+
+1. Open Sublime Text's console.
+2. Paste and run the following script:
+
+    ```py
+    from urllib.request import urlretrieve; urlretrieve(url="https://download.sublimetext.com/Package%20Control.sublime-package", filename=sublime.installed_packages_path() + '/Package Control.sublime-package')
+    ```
+
+> [!NOTE]
+>
+> Package Control.sublime-package is exactly the same 
+> as if it were downloaded by the installer.
 
 ## Usage
 
-All of the primary features of Package Control are exposed through the command palette.
+All primary features are exposed through the Command Palette.
 
 To install a package:
 
- - Open the command palette
- - Type "Install Package"
- - Select a package from the list
+1. Open `Command Palette` using <kbd>Ctrl+Shift+P</kbd> or menu item `Tools → Command Palette...`.
+2. Choose `Package Control: Install Package`.
+3. Select a package from the list and hit <kbd>Enter</kbd>.
 
-For more features, see https://packagecontrol.io/docs/usage.
+For more features, see:
+
+- https://packagecontrol.io/docs/usage
+- [https://docs.sublimetext.io/guide/package-control/usage](https://docs.sublimetext.io/guide/package-control/usage.html)
 
 ## Documentation
 
-The documentation for Package Control can be found at https://packagecontrol.io/docs.
+Original documentation can be found at https://packagecontrol.io/docs
+or community driven documentation at https://docs.sublimetext.io.
 
 ## Bug Reports
 
@@ -41,7 +67,8 @@ If you find a bug with Package Control, please follow the directions at https://
 Package Control is licensed under the MIT license.
 
 ```
-Copyright (c) 2011-2023 Will Bond <will@wbond.net>
+Copyright (c) 2011-2025 Will Bond <will@wbond.net>
+Copyright (c) 2026 Sublime HQ Pty Ltd, Woollahra, Sydney.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
