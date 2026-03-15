@@ -10,6 +10,7 @@ from ..activity_indicator import ActivityIndicator
 from ..console_write import console_write
 from ..package_manager import PackageManager
 from ..show_error import show_message
+from ..sys_path import python_versions
 
 USE_QUICK_PANEL_ITEM = hasattr(sublime, "QuickPanelItem")
 
@@ -48,11 +49,41 @@ class ListAvailableLibrariesCommand(sublime_plugin.ApplicationCommand):
 
         threading.Thread(target=show_quick_panel).start()
 
+    @staticmethod
+    def latest_releases(releases):
+        versions = []
+        for pyver in python_versions():
+            for release in releases:
+                if pyver in release["python_versions"]:
+                    versions.append([release["version"], pyver])
+                    break
+
+        if not versions:
+            return ""
+
+        if len(versions) > 1 and versions[0][0] != versions[1][0]:
+            return ",".join(
+                " v{} (py{})".format(ver, pyver)
+                for ver, pyver in versions
+            )
+
+        return " v" + versions[0][0]
+
+    @staticmethod
+    def latest_release_date(releases):
+        pyver = python_versions()[-1]
+        for release in releases:
+            if pyver in release["python_versions"]:
+                return release["date"].split(" ", 1)[0]
+
+        return releases[0]["date"].split(" ", 1)[0]
+
     def show_quick_panel_st3(self, libraries):
-        items = [
-            [info["name"] + " v" + info["releases"][0]["version"], info["description"]]
-            for info in libraries
-        ]
+        items = []
+        for info in libraries:
+            versions = self.latest_releases(info["releases"])
+            if versions:
+                items.append([info["name"] + versions, info["description"]])
 
         def on_done(picked):
             if picked > -1:
@@ -63,11 +94,13 @@ class ListAvailableLibrariesCommand(sublime_plugin.ApplicationCommand):
         )
 
     def show_quick_panel_st4(self, libraries):
-        # TODO: display supported python versions
-
         items = []
         for info in libraries:
-            display_name = info["name"] + " v" + info["releases"][0]["version"]
+            versions = self.latest_releases(info["releases"])
+            if not versions:
+                continue
+
+            display_name = info["name"] + versions
 
             details = [html.escape(info["description"])]
 
@@ -79,7 +112,7 @@ class ListAvailableLibrariesCommand(sublime_plugin.ApplicationCommand):
                 )
 
             try:
-                date = info["releases"][0]["date"].split(" ", 1)[0]
+                date = self.latest_release_date(info["releases"])
                 annotation = datetime.strptime(date, "%Y-%m-%d").strftime(
                     "Updated on %a %b %d, %Y"
                 )
