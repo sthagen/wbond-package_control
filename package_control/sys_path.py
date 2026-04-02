@@ -171,6 +171,8 @@ def lib_paths():
                 fext = ".exe" if sublime.platform() == "windows" else ""
                 if os.path.isfile(os.path.join(root, "plugin_host-3.3" + fext)):
                     lib_paths.cache["3.3"] = os.path.join(__data_path, "Lib", "python33")
+        elif st_version >= 4000:
+            lib_paths.cache["3.3"] = os.path.join(__data_path, "Lib", "python33")
 
         return lib_paths.cache
 
