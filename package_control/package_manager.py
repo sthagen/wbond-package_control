@@ -45,7 +45,7 @@ from .providers import CHANNEL_PROVIDERS, REPOSITORY_PROVIDERS
 from .providers.channel_provider import UncachedChannelRepositoryError
 from .providers.provider_exception import ProviderException
 from .selectors import is_compatible_version, is_compatible_platform, get_compatible_platform
-from .settings import load_list_setting, pc_settings_filename, preferences_filename
+from .settings import load_list_setting, pc_settings_filename
 from .upgraders.git_upgrader import GitUpgrader
 from .upgraders.hg_upgrader import HgUpgrader
 
