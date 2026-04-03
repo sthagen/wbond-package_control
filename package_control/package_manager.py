@@ -151,13 +151,6 @@ class PackageManager:
         self.settings['arch'] = sublime.arch()
         self.settings['version'] = int(sublime.version())
 
-        # Cache some user preferences
-        if self.settings['version'] > 4192:
-            settings = sublime.load_settings(preferences_filename())
-            self.settings['disable_plugin_host_3.3'] = settings.get('disable_plugin_host_3.3', False)
-        else:
-            self.settings['disable_plugin_host_3.3'] = False
-
         # Use the cache to see if settings have changed since the last
         # time the package manager was created, and clearing any cached
         # values if they have.
