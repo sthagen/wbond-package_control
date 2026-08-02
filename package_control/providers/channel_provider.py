@@ -126,14 +126,10 @@ class ChannelProvider:
             DownloaderException: when an error occurs trying to open a URL
 
         :return:
-            A generator of 'library names'
+            A generator of ("Library Name", Exception()) tuples
         """
 
-        self.fetch()
-
-        for library in chain(*self.libraries_cache.values()):
-            if not library['releases']:
-                yield library['name']
+        return (None, None)
 
     def get_broken_packages(self):
         """
@@ -144,14 +140,10 @@ class ChannelProvider:
             DownloaderException: when an error occurs trying to open a URL
 
         :return:
-            A generator of 'package names'
+            A generator of ("Package Name", Exception()) tuples
         """
 
-        self.fetch()
-
-        for package in chain(*self.packages_cache.values()):
-            if not package['releases']:
-                yield package['name']
+        return (None, None)
 
     def get_libraries(self, repo_url):
         """
@@ -194,8 +186,7 @@ class ChannelProvider:
             raise UncachedChannelRepositoryError(repo_url)
 
         for library in self.libraries_cache[repo_url]:
-            if library['releases']:
-                yield (library['name'], library)
+            yield (library['name'], library)
 
     def get_packages(self, repo_url):
         """
@@ -246,8 +237,7 @@ class ChannelProvider:
             raise UncachedChannelRepositoryError(repo_url)
 
         for package in self.packages_cache[repo_url]:
-            if package['releases']:
-                yield (package['name'], package)
+            yield (package['name'], package)
 
     def get_sources(self):
         """
