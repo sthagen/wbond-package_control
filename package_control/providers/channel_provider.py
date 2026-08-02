@@ -301,6 +301,11 @@ class ChannelProvider:
         """
         Transform input packages cache to scheme version 4.0.0
 
+        Note: package_cache is supported as of schema version 3.0.0 and
+              expected to contain only packages with url based releases.
+
+              Thus migration skips any v2.0 related operations.
+
         :param channel_info:
             The input channel information of any scheme version
 
@@ -351,6 +356,11 @@ class ChannelProvider:
     def _migrate_libraries_cache(self, channel_info, schema_version):
         """
         Transform input libraries cache to scheme version 4.0.0
+
+        Note: libraries_cache is supported as of schema version 3.0.0 and
+              expected to contain only packages with url based releases.
+
+              Thus migration skips any v2.0 related operations.
 
         :param channel_info:
             The input channel information of any scheme version
