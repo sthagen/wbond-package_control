@@ -2157,7 +2157,7 @@ class ChannelProviderTests(unittest.TestCase):
         provider = ChannelProvider(TEST_REPOSITORY_URL + "channel-1.2.json", self.settings())
         self.assertRaises(
             InvalidChannelFileException,
-            provider.get_repositories
+            provider.get_sources
         )
 
     def test_get_sources_12(self):

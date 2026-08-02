@@ -513,7 +513,7 @@ class PackageManager:
                     continue
 
                 try:
-                    channel_repositories = provider.get_repositories()
+                    channel_repositories = provider.get_sources()
                     if channel[:8].lower() != "file:///":
                         set_cache(cache_key, channel_repositories, cache_ttl)
 
