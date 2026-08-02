@@ -8,6 +8,7 @@ import re
 import shutil
 import tempfile
 import time
+import traceback
 import zipfile
 
 from concurrent import futures
@@ -628,9 +629,12 @@ class PackageManager:
         def download_repo(url):
             for provider_class in REPOSITORY_PROVIDERS:
                 if provider_class.match_url(url):
-                    provider = provider_class(url, self.settings)
-                    provider.prefetch()
-                    providers.append(provider)
+                    try:
+                        provider = provider_class(url, self.settings)
+                        provider.prefetch()
+                        providers.append(provider)
+                    except BaseException:
+                        traceback.print_exc()
                     break
 
         # Repositories are run in reverse order so that the ones first
