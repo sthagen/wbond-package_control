@@ -50,7 +50,7 @@ class ChannelProvider:
     __slots__ = [
         'channel_url',
         'schema_version',
-        'repositories',
+        'repo_urls',
         'libraries_cache',
         'packages_cache',
         'settings',
@@ -59,7 +59,7 @@ class ChannelProvider:
     def __init__(self, channel_url, settings):
         self.channel_url = channel_url
         self.schema_version = SchemaVersion('4.0.0')
-        self.repositories = None
+        self.repo_urls = None
         self.libraries_cache = {}
         self.packages_cache = {}
         self.settings = settings
@@ -93,7 +93,7 @@ class ChannelProvider:
             DownloaderException: when an error occurs trying to open a URL
         """
 
-        if self.repositories is not None:
+        if self.repo_urls is not None:
             return
 
         json_string = http_get(self.channel_url, self.settings, 'Error downloading channel.')
@@ -113,7 +113,7 @@ class ChannelProvider:
         if 'repositories' not in channel_info:
             raise InvalidChannelFileException(self, 'the "repositories" JSON key is missing.')
 
-        self.repositories = self._migrate_repositories(channel_info, schema_version)
+        self.repo_urls = self._migrate_repo_urls(channel_info, schema_version)
         self.packages_cache = self._migrate_packages_cache(channel_info, schema_version)
         self.libraries_cache = self._migrate_libraries_cache(channel_info, schema_version)
 
@@ -264,7 +264,7 @@ class ChannelProvider:
 
         self.fetch()
 
-        return self.repositories
+        return self.repo_urls
 
     def get_renamed_packages(self):
         """
@@ -288,7 +288,7 @@ class ChannelProvider:
 
         return output
 
-    def _migrate_repositories(self, channel_info, schema_version):
+    def _migrate_repo_urls(self, channel_info, schema_version):
 
         debug = self.settings.get('debug')
 
