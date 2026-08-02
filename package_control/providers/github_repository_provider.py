@@ -70,42 +70,44 @@ class GitHubRepositoryProvider(BaseRepositoryProvider):
 
         :return:
             A generator of
-            (
-                'Package Name',
-                {
-                    'name': name,
-                    'description': description,
-                    'author': author,
-                    'homepage': homepage,
-                    'last_modified': last modified date,
-                    'releases': [
-                        {
-                            'sublime_text': '*',
-                            'platforms': ['*'],
-                            'url': url,
-                            'date': date,
-                            'version': version
-                        }, ...
-                    ],
-                    'previous_names': [],
-                    'labels': [],
-                    'sources': [the repo URL],
-                    'readme': url,
-                    'issues': url,
-                    'donate': url,
-                    'buy': None
-                }
-            )
-            tuples
+
+            ```py
+            {
+                'name': name,
+                'description': description,
+                'author': author,
+                'homepage': homepage,
+                'previous_names': [old_name, ...],
+                'labels': [label, ...],
+                'sources': [url, ...],
+                'readme': url,
+                'issues': url,
+                'donate': url,
+                'buy': url,
+                'last_modified': last modified date,
+                'releases': [
+                    {
+                        'sublime_text': compatible version,
+                        'platforms': [platform name, ...],
+                        'url': url,
+                        'date': date,
+                        'version': version,
+                        'libraries': [library name, ...]
+                    }, ...
+                ]
+            }
+            ```
+
+            dictionaries
         """
 
         if self.packages is not None:
-            for key, value in self.packages.items():
-                yield (key, value)
-            return
+            for details in self.packages.values():
+                yield details
+            return None
 
         if invalid_sources is not None and self.repo_url in invalid_sources:
-            return
+            return None
 
         client = GitHubClient(self.settings)
 
@@ -139,7 +141,7 @@ class GitHubRepositoryProvider(BaseRepositoryProvider):
                 'buy': None
             }
             self.packages = {name: details}
-            yield (name, details)
+            yield details
 
         except (DownloaderException, ClientException, ProviderException) as e:
             self.failed_sources[self.repo_url] = e

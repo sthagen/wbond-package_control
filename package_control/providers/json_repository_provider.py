@@ -192,42 +192,43 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
 
         :return:
             A generator of
-            (
-                'Library Name',
-                {
-                    'name': name,
-                    'description': description,
-                    'author': author,
-                    'issues': URL,
-                    'releases': [
-                        {
-                            'sublime_text': compatible version,
-                            'platforms': [platform name, ...],
-                            'python_versions': ['3.3', '3.8'],
-                            'url': url,
-                            'version': version,
-                            'sha256': hex hash
-                        }, ...
-                    ],
-                    'sources': [url, ...]
-                }
-            )
-            tuples
+
+            ```py
+            {
+                'name': name,
+                'description': description,
+                'author': author,
+                'issues': URL,
+                'releases': [
+                    {
+                        'sublime_text': compatible version,
+                        'platforms': [platform name, ...],
+                        'python_versions': ['3.3', '3.8'],
+                        'url': url,
+                        'version': version,
+                        'sha256': hex hash
+                    }, ...
+                ],
+                'sources': [url, ...]
+            }
+            ```
+
+            dictionaries
         """
 
         if self.libraries is not None:
-            for key, value in self.libraries.items():
-                yield (key, value)
-            return
+            for details in self.libraries.values():
+                yield details
+            return None
 
         if invalid_sources is not None and self.repo_url in invalid_sources:
-            return
+            return None
 
         if not self.fetch():
-            return
+            return None
 
         if not self.repo_info:
-            return
+            return None
 
         if self.schema_version.major >= 4:
             allowed_library_keys = {
@@ -458,7 +459,7 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
                 info['releases'] = version_sort(info['releases'], 'platforms', reverse=True)
 
                 output[info['name']] = info
-                yield (info['name'], info)
+                yield info
 
             except (DownloaderException, ClientException, ProviderException) as e:
                 self.broken_libriaries[info['name']] = e
@@ -474,49 +475,50 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
 
         :return:
             A generator of
-            (
-                'Package Name',
-                {
-                    'name': name,
-                    'description': description,
-                    'author': author,
-                    'homepage': homepage,
-                    'previous_names': [old_name, ...],
-                    'labels': [label, ...],
-                    'sources': [url, ...],
-                    'readme': url,
-                    'issues': url,
-                    'donate': url,
-                    'buy': url,
-                    'last_modified': last modified date,
-                    'releases': [
-                        {
-                            'sublime_text': compatible version,
-                            'platforms': [platform name, ...],
-                            'url': url,
-                            'date': date,
-                            'version': version,
-                            'libraries': [library name, ...]
-                        }, ...
-                    ]
-                }
-            )
-            tuples
+
+            ```py
+            {
+                'name': name,
+                'description': description,
+                'author': author,
+                'homepage': homepage,
+                'previous_names': [old_name, ...],
+                'labels': [label, ...],
+                'sources': [url, ...],
+                'readme': url,
+                'issues': url,
+                'donate': url,
+                'buy': url,
+                'last_modified': last modified date,
+                'releases': [
+                    {
+                        'sublime_text': compatible version,
+                        'platforms': [platform name, ...],
+                        'url': url,
+                        'date': date,
+                        'version': version,
+                        'libraries': [library name, ...]
+                    }, ...
+                ]
+            }
+            ```
+
+            dictionaries
         """
 
         if self.packages is not None:
-            for key, value in self.packages.items():
-                yield (key, value)
-            return
+            for details in self.packages.values():
+                yield details
+            return None
 
         if invalid_sources is not None and self.repo_url in invalid_sources:
-            return
+            return None
 
         if not self.fetch():
-            return
+            return None
 
         if not self.repo_info:
-            return
+            return None
 
         copied_package_keys = (
             'name',
@@ -866,7 +868,7 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
                     info['last_modified'] = date
 
                 output[info['name']] = info
-                yield (info['name'], info)
+                yield info
 
             except (DownloaderException, ClientException, ProviderException) as e:
                 self.broken_packages[info['name']] = e

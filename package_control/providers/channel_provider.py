@@ -158,26 +158,28 @@ class ChannelProvider:
 
         :return:
             A generator of
-            (
-                'Library Name',
-                {
-                    'name': name,
-                    'description': description,
-                    'author': author,
-                    'issues': URL,
-                    'releases': [
-                        {
-                            'sublime_text': compatible version,
-                            'platforms': [platform name, ...],
-                            'python_versions': ['3.3', '3.8'],
-                            'url': url,
-                            'version': version,
-                            'sha256': hex hash
-                        }, ...
-                    ]
-                }
-            )
-            tuples
+
+            ```py
+            {
+                'name': name,
+                'description': description,
+                'author': author,
+                'issues': URL,
+                'releases': [
+                    {
+                        'sublime_text': compatible version,
+                        'platforms': [platform name, ...],
+                        'python_versions': ['3.3', '3.8'],
+                        'url': url,
+                        'version': version,
+                        'sha256': hex hash
+                    }, ...
+                ],
+                'sources': [url, ...]
+            }
+            ```
+
+            dictionaries
         """
 
         self.fetch()
@@ -185,8 +187,7 @@ class ChannelProvider:
         if repo_url not in self.libraries_cache:
             raise UncachedChannelRepositoryError(repo_url)
 
-        for library in self.libraries_cache[repo_url]:
-            yield (library['name'], library)
+        return self.libraries_cache[repo_url]
 
     def get_packages(self, repo_url):
         """
@@ -201,34 +202,35 @@ class ChannelProvider:
 
         :return:
             A generator of
-            (
-                'Package Name',
-                {
-                    'name': name,
-                    'description': description,
-                    'author': author,
-                    'homepage': homepage,
-                    'previous_names': [old_name, ...],
-                    'labels': [label, ...],
-                    'readme': url,
-                    'issues': url,
-                    'donate': url,
-                    'buy': url,
-                    'last_modified': last modified date,
-                    'releases': [
-                        {
-                            'sublime_text': compatible version,
-                            'platforms': [platform name, ...],
-                            'python_versions': ['3.3', '3.8'],
-                            'url': url,
-                            'date': date,
-                            'version': version,
-                            'libraries': [library name, ...]
-                        }, ...
-                    ]
-                }
-            )
-            tuples
+
+            ```py
+            {
+                'name': name,
+                'description': description,
+                'author': author,
+                'homepage': homepage,
+                'previous_names': [old_name, ...],
+                'labels': [label, ...],
+                'sources': [url, ...],
+                'readme': url,
+                'issues': url,
+                'donate': url,
+                'buy': url,
+                'last_modified': last modified date,
+                'releases': [
+                    {
+                        'sublime_text': compatible version,
+                        'platforms': [platform name, ...],
+                        'url': url,
+                        'date': date,
+                        'version': version,
+                        'libraries': [library name, ...]
+                    }, ...
+                ]
+            }
+            ```
+
+            dictionaries
         """
 
         self.fetch()
@@ -236,8 +238,7 @@ class ChannelProvider:
         if repo_url not in self.packages_cache:
             raise UncachedChannelRepositoryError(repo_url)
 
-        for package in self.packages_cache[repo_url]:
-            yield (package['name'], package)
+        return self.packages_cache[repo_url]
 
     def get_sources(self):
         """

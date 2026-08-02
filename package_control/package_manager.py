@@ -524,7 +524,8 @@ class PackageManager:
 
                         try:
                             filtered_packages = {}
-                            for name, info in provider.get_packages(repo):
+                            for info in provider.get_packages(repo):
+                                name = info['name']
                                 info['releases'] = self.select_releases(name, info['releases'])
                                 if info['releases']:
                                     filtered_packages[name] = info
@@ -539,11 +540,11 @@ class PackageManager:
 
                         try:
                             filtered_libraries = {}
-                            for name, info in provider.get_libraries(repo):
+                            for info in provider.get_libraries(repo):
                                 # Convert legacy dependency names to official pypi package names.
                                 # This is required for forward compatibility with upcomming changes
                                 # in scheme 4.0.0. Do it here to apply only on client side.
-                                name = info['name'] = library.translate_name(name)
+                                name = info['name'] = library.translate_name(info['name'])
 
                                 info['releases'] = self.select_releases(name, info['releases'])
                                 if info['releases']:
@@ -665,9 +666,9 @@ class PackageManager:
         for provider in providers:
             repository_packages = {}
             unavailable_packages = []
-            for name, info in provider.get_packages():
-                name = name_map.get(name, name)
-                info['name'] = name
+            for info in provider.get_packages():
+                name = info['name']
+                name = info['name'] = name_map.get(name, name)
                 info['releases'] = self.select_releases(name, info['releases'])
                 if info['releases']:
                     repository_packages[name] = info
@@ -676,11 +677,11 @@ class PackageManager:
 
             repository_libraries = {}
             unavailable_libraries = []
-            for name, info in provider.get_libraries():
+            for info in provider.get_libraries():
                 # Convert legacy dependency names to official pypi package names.
                 # This is required for forward compatibility with upcomming changes
                 # in scheme 4.0.0. Do it here to apply only on client side.
-                name = info['name'] = library.translate_name(name)
+                name = info['name'] = library.translate_name(info['name'])
 
                 info['releases'] = self.select_releases(name, info['releases'])
                 if info['releases']:
