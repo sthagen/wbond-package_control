@@ -129,7 +129,7 @@ class ChannelProvider:
             A generator of ("Library Name", Exception()) tuples
         """
 
-        return (None, None)
+        return {}.items()
 
     def get_broken_packages(self):
         """
@@ -143,7 +143,7 @@ class ChannelProvider:
             A generator of ("Package Name", Exception()) tuples
         """
 
-        return (None, None)
+        return {}.items()
 
     def get_libraries(self, repo_url):
         """
@@ -255,7 +255,7 @@ class ChannelProvider:
 
         self.fetch()
 
-        return self.repo_urls
+        return self.repo_urls or []
 
     def get_renamed_packages(self):
         """
