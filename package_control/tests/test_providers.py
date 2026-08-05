@@ -6,9 +6,7 @@ from ..http_cache import HttpCache
 from ..providers.bitbucket_repository_provider import BitBucketRepositoryProvider
 from ..providers.channel_provider import ChannelProvider, InvalidChannelFileException
 from ..providers.github_repository_provider import GitHubRepositoryProvider
-from ..providers.github_user_provider import GitHubUserProvider
 from ..providers.gitlab_repository_provider import GitLabRepositoryProvider
-from ..providers.gitlab_user_provider import GitLabUserProvider
 from ..providers.json_repository_provider import JsonRepositoryProvider
 from ..providers import json_repository_provider
 from ._data_decorator import data_decorator, data
@@ -250,93 +248,6 @@ class GitHubRepositoryProviderTests(unittest.TestCase):
 
 
 @data_decorator
-class GitHubUserProviderTests(unittest.TestCase):
-    maxDiff = None
-
-    def settings(self):
-        if not GH_PASS:
-            self.skipTest("GitHub personal access token for %s not set via env var GH_PASS" % GH_USER)
-
-        return {
-            "debug": DEBUG,
-            "cache": HttpCache(604800),
-            "cache_length": 604800,
-            "user_agent": USER_AGENT,
-            "http_basic_auth": {
-                "api.github.com": [GH_USER, GH_PASS],
-                "raw.githubusercontent.com": [GH_USER, GH_PASS],
-            }
-        }
-
-    @data(
-        (
-            ("https://github.com/packagecontrol-test", True),
-            ("https://github.com/packagecontrol-test/", True),
-            ("https://github,com/packagecontrol-test", False),
-            ("https://github.com/packagecontrol-test/package_control-tester", False),
-            ("https://github.com/packagecontrol-test/package_control-tester/tree/master", False),
-            ("https://bitbucket.org/packagecontrol-test", False),
-        )
-    )
-    def match_url(self, url, result):
-        self.assertEqual(result, GitHubUserProvider.match_url(url))
-
-    def test_get_libraries(self):
-        provider = GitHubUserProvider("https://github.com/packagecontrol-test", self.settings())
-        self.assertEqual([], list(provider.get_libraries()))
-
-    def test_get_broken_libraries(self):
-        provider = GitHubUserProvider("https://github.com/packagecontrol-test", self.settings())
-        self.assertEqual([], list(provider.get_broken_libraries()))
-
-    def test_get_packages(self):
-        provider = GitHubUserProvider("https://github.com/packagecontrol-test", self.settings())
-        self.assertEqual(
-            [
-                {
-                    "name": "package_control-tester",
-                    "description": "A test of Package Control upgrade messages with "
-                                   "explicit versions, but date-based releases.",
-                    "homepage": "https://github.com/packagecontrol-test/package_control-tester",
-                    "author": "packagecontrol-test",
-                    "readme": "https://raw.githubusercontent.com/packagecontrol-test"
-                              "/package_control-tester/master/readme.md",
-                    "issues": "https://github.com/packagecontrol-test/package_control-tester/issues",
-                    "donate": None,
-                    "buy": None,
-                    "sources": ["https://github.com/packagecontrol-test"],
-                    "labels": [],
-                    "previous_names": [],
-                    "releases": [
-                        {
-                            "date": LAST_COMMIT_TIMESTAMP,
-                            "version": LAST_COMMIT_VERSION,
-                            "url": "https://codeload.github.com/packagecontrol-test"
-                                   "/package_control-tester/zip/master",
-                            "sublime_text": "*",
-                            "platforms": ["*"]
-                        }
-                    ],
-                    "last_modified": LAST_COMMIT_TIMESTAMP
-                }
-            ],
-            list(provider.get_packages())
-        )
-
-    def test_get_broken_packages(self):
-        provider = GitHubUserProvider("https://github.com/packagecontrol-test", self.settings())
-        self.assertEqual([], list(provider.get_broken_packages()))
-
-    def test_get_renamed_packages(self):
-        provider = GitHubUserProvider("https://github.com/packagecontrol-test", self.settings())
-        self.assertEqual({}, provider.get_renamed_packages())
-
-    def test_get_sources(self):
-        provider = GitHubUserProvider("https://github.com/packagecontrol-test", self.settings())
-        self.assertEqual(["https://github.com/packagecontrol-test"], provider.get_sources())
-
-
-@data_decorator
 class GitLabRepositoryProviderTests(unittest.TestCase):
     maxDiff = None
 
@@ -443,90 +354,6 @@ class GitLabRepositoryProviderTests(unittest.TestCase):
             ["https://gitlab.com/packagecontrol-test/package_control-tester"],
             provider.get_sources()
         )
-
-
-@data_decorator
-class GitLabUserProviderTests(unittest.TestCase):
-    maxDiff = None
-
-    def settings(self):
-        if not GL_PASS:
-            self.skipTest("GitLab personal access token for %s not set via env var GL_PASS" % GL_USER)
-
-        return {
-            "debug": DEBUG,
-            "cache": HttpCache(604800),
-            "cache_length": 604800,
-            "user_agent": USER_AGENT,
-            "http_basic_auth": {
-                "gitlab.com": [GL_USER, GL_PASS]
-            }
-        }
-
-    @data(
-        (
-            ("https://gitlab.com/packagecontrol-test", True),
-            ("https://gitlab.com/packagecontrol-test/", True),
-            ("https://gitlab,com/packagecontrol-test", False),
-            ("https://gitlab.com/packagecontrol-test/package_control-tester", False),
-            ("https://gitlab.com/packagecontrol-test/package_control-tester/-/tree/master", False),
-            ("https://bitbucket.org/packagecontrol-test", False),
-        )
-    )
-    def match_url(self, url, result):
-        self.assertEqual(result, GitLabUserProvider.match_url(url))
-
-    def test_get_libraries(self):
-        provider = GitLabUserProvider("https://gitlab.com/packagecontrol-test", self.settings())
-        self.assertEqual([], list(provider.get_libraries()))
-
-    def test_get_broken_libraries(self):
-        provider = GitLabUserProvider("https://gitlab.com/packagecontrol-test", self.settings())
-        self.assertEqual([], list(provider.get_broken_libraries()))
-
-    def test_get_packages(self):
-        provider = GitLabUserProvider("https://gitlab.com/packagecontrol-test", self.settings())
-        self.assertEqual(
-            [
-                {
-                    "name": "package_control-tester",
-                    "description": "A test of Package Control upgrade messages with "
-                                   "explicit versions, but date-based releases.",
-                    "homepage": "https://gitlab.com/packagecontrol-test/package_control-tester",
-                    "author": "packagecontrol-test",
-                    "readme": "https://gitlab.com/packagecontrol-test/"
-                              "package_control-tester/-/raw/master/readme.md",
-                    "issues": None,
-                    "donate": None,
-                    "buy": None,
-                    "sources": ["https://gitlab.com/packagecontrol-test"],
-                    "labels": [],
-                    "previous_names": [],
-                    "releases": [{
-                        "sublime_text": "*",
-                        "date": "2020-07-15 10:50:38",
-                        "version": "2020.07.15.10.50.38",
-                        "platforms": ["*"],
-                        "url": "https://gitlab.com/packagecontrol-test/"
-                        "package_control-tester/-/archive/master/package_control-tester-master.zip"
-                    }],
-                    "last_modified": "2020-07-15 10:50:38"
-                }
-            ],
-            list(provider.get_packages())
-        )
-
-    def test_get_broken_packages(self):
-        provider = GitLabUserProvider("https://gitlab.com/packagecontrol-test", self.settings())
-        self.assertEqual([], list(provider.get_broken_packages()))
-
-    def test_get_renamed_packages(self):
-        provider = GitLabUserProvider("https://gitlab.com/packagecontrol-test", self.settings())
-        self.assertEqual({}, provider.get_renamed_packages())
-
-    def test_get_sources(self):
-        provider = GitLabUserProvider("https://gitlab.com/packagecontrol-test", self.settings())
-        self.assertEqual(["https://gitlab.com/packagecontrol-test"], provider.get_sources())
 
 
 @data_decorator
