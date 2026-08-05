@@ -104,10 +104,10 @@ class GitLabRepositoryProvider(BaseRepositoryProvider):
         if self.packages is not None:
             for details in self.packages.values():
                 yield details
-            return None
+            return
 
         if invalid_sources is not None and self.repo_url in invalid_sources:
-            return None
+            return
 
         client = GitLabClient(self.settings)
 
