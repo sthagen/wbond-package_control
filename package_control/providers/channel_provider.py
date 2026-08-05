@@ -49,7 +49,6 @@ class ChannelProvider:
 
     __slots__ = [
         'channel_url',
-        'schema_version',
         'repo_urls',
         'libraries_cache',
         'packages_cache',
@@ -58,7 +57,6 @@ class ChannelProvider:
 
     def __init__(self, channel_url, settings):
         self.channel_url = channel_url
-        self.schema_version = SchemaVersion('4.0.0')
         self.repo_urls = None
         self.libraries_cache = {}
         self.packages_cache = {}
