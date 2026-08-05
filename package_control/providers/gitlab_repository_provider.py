@@ -61,12 +61,9 @@ class GitLabRepositoryProvider(BaseRepositoryProvider):
         user, repo, _ = GitLabClient.user_repo_branch(repo_url)
         return bool(user and repo)
 
-    def get_packages(self, invalid_sources=None):
+    def get_packages(self):
         """
         Uses the GitLab API to construct necessary info for a package
-
-        :param invalid_sources:
-            A list of URLs that should be ignored
 
         :return:
             A generator of
@@ -104,9 +101,6 @@ class GitLabRepositoryProvider(BaseRepositoryProvider):
         if self.packages is not None:
             for details in self.packages.values():
                 yield details
-            return
-
-        if invalid_sources is not None and self.repo_url in invalid_sources:
             return
 
         client = GitLabClient(self.settings)

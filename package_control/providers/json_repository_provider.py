@@ -183,12 +183,9 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
 
         return repo_info
 
-    def get_libraries(self, invalid_sources=None):
+    def get_libraries(self):
         """
         Provides access to the libraries in this repository
-
-        :param invalid_sources:
-            A list of URLs that are permissible to fetch data from
 
         :return:
             A generator of
@@ -219,9 +216,6 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
         if self.libraries is not None:
             for details in self.libraries.values():
                 yield details
-            return
-
-        if invalid_sources is not None and self.repo_url in invalid_sources:
             return
 
         if not self.fetch():
@@ -466,12 +460,9 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
 
         self.libraries = output
 
-    def get_packages(self, invalid_sources=None):
+    def get_packages(self):
         """
         Provides access to the packages in this repository
-
-        :param invalid_sources:
-            A list of URLs that are permissible to fetch data from
 
         :return:
             A generator of
@@ -509,9 +500,6 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
         if self.packages is not None:
             for details in self.packages.values():
                 yield details
-            return
-
-        if invalid_sources is not None and self.repo_url in invalid_sources:
             return
 
         if not self.fetch():

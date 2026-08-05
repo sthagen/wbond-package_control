@@ -53,12 +53,9 @@ class BitBucketRepositoryProvider(BaseRepositoryProvider):
         user, repo, _ = BitBucketClient.user_repo_branch(repo_url)
         return bool(user and repo)
 
-    def get_packages(self, invalid_sources=None):
+    def get_packages(self):
         """
         Uses the BitBucket API to construct necessary info for a package
-
-        :param invalid_sources:
-            A list of URLs that should be ignored
 
         :return:
             A generator of
@@ -96,9 +93,6 @@ class BitBucketRepositoryProvider(BaseRepositoryProvider):
         if self.packages is not None:
             for details in self.packages.values():
                 yield details
-            return
-
-        if invalid_sources is not None and self.repo_url in invalid_sources:
             return
 
         client = BitBucketClient(self.settings)
