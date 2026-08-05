@@ -18,3 +18,17 @@ REPOSITORY_PROVIDERS = [
 ]
 
 CHANNEL_PROVIDERS = [ChannelProvider]
+
+
+def channel_provider_for(url, settings):
+    for provider_class in CHANNEL_PROVIDERS:
+        if provider_class.match_url(url):
+            return provider_class(url, settings)
+    return None
+
+
+def repo_provider_for(url, settings):
+    for provider_class in REPOSITORY_PROVIDERS:
+        if provider_class.match_url(url):
+            return provider_class(url, settings)
+    return None

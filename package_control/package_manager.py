@@ -42,7 +42,7 @@ from .package_io import (
     zip_file_exists,
 )
 from .package_version import PackageVersion, version_sort
-from .providers import CHANNEL_PROVIDERS, REPOSITORY_PROVIDERS
+from .providers import channel_provider_for, repo_provider_for
 from .providers.channel_provider import UncachedChannelRepositoryError
 from .providers.provider_exception import ProviderException
 from .selectors import is_compatible_version, is_compatible_platform, get_compatible_platform
@@ -506,11 +506,8 @@ class PackageManager:
             # grab the channel to get it
             if channel_repositories is None:
 
-                for provider_class in CHANNEL_PROVIDERS:
-                    if provider_class.match_url(channel):
-                        provider = provider_class(channel, self.settings)
-                        break
-                else:
+                provider = channel_provider_for(channel, self.settings)
+                if not provider:
                     continue
 
                 try:
@@ -627,15 +624,13 @@ class PackageManager:
         libraries = {}
 
         def download_repo(url):
-            for provider_class in REPOSITORY_PROVIDERS:
-                if provider_class.match_url(url):
-                    try:
-                        provider = provider_class(url, self.settings)
-                        provider.prefetch()
-                        providers.append(provider)
-                    except BaseException:
-                        traceback.print_exc()
-                    break
+            try:
+                provider = repo_provider_for(url, self.settings)
+                if provider:
+                    provider.prefetch()
+                    providers.append(provider)
+            except BaseException:
+                traceback.print_exc()
 
         # Repositories are run in reverse order so that the ones first
         # on the list will overwrite those last on the list
