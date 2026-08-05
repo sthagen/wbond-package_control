@@ -546,10 +546,6 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
             details = package.get('details')
             if details:
                 details = resolve_url(self.repo_url, details)
-
-                if invalid_sources is not None and details in invalid_sources:
-                    continue
-
                 if details not in info['sources']:
                     info['sources'].append(details)
 
