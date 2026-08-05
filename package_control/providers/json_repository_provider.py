@@ -219,16 +219,16 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
         if self.libraries is not None:
             for details in self.libraries.values():
                 yield details
-            return None
+            return
 
         if invalid_sources is not None and self.repo_url in invalid_sources:
-            return None
+            return
 
         if not self.fetch():
-            return None
+            return
 
         if not self.repo_info:
-            return None
+            return
 
         if self.schema_version.major >= 4:
             allowed_library_keys = {
@@ -509,16 +509,16 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
         if self.packages is not None:
             for details in self.packages.values():
                 yield details
-            return None
+            return
 
         if invalid_sources is not None and self.repo_url in invalid_sources:
-            return None
+            return
 
         if not self.fetch():
-            return None
+            return
 
         if not self.repo_info:
-            return None
+            return
 
         copied_package_keys = (
             'name',
