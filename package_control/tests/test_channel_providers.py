@@ -15,6 +15,7 @@ from ._config import (
 )
 
 
+@data_decorator
 class ChannelProviderTests(unittest.TestCase):
     maxDiff = None
 
@@ -1090,7 +1091,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 02:02:22",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/0.9.0",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             }
                         ]
@@ -1121,28 +1122,28 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 15:52:35",
                                 "url": "https://bitbucket.org/wbond/package_control-tester"
                                        "/get/1.0.1.zip",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             },
                             {
                                 "version": "1.0.1-beta",
                                 "date": "2014-11-12 15:14:23",
                                 "url": "https://bitbucket.org/wbond/package_control-tester/get/1.0.1-beta.zip",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             },
                             {
                                 "version": "1.0.0",
                                 "date": "2014-11-12 15:14:13",
                                 "url": "https://bitbucket.org/wbond/package_control-tester/get/1.0.0.zip",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             },
                             {
                                 "version": "0.9.0",
                                 "date": "2014-11-12 02:02:22",
                                 "url": "https://bitbucket.org/wbond/package_control-tester/get/0.9.0.zip",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             }
                         ]
@@ -1165,7 +1166,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "version": "1.0.2",
                                 "date": "2014-11-28 20:54:15",
                                 "url": "https://bitbucket.org/wbond/package_control-tester/get/win-1.0.2.zip",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["windows"]
                             }
                         ]
@@ -1220,7 +1221,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 15:52:35",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/1.0.1",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             },
                             {
@@ -1228,7 +1229,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 15:14:23",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/1.0.1-beta",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             },
                             {
@@ -1236,7 +1237,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 15:14:13",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/1.0.0",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             },
                             {
@@ -1244,7 +1245,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 02:02:22",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/0.9.0",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             }
                         ]
@@ -1269,7 +1270,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 15:52:35",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/1.0.1",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             },
                             {
@@ -1277,7 +1278,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 15:14:23",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/1.0.1-beta",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             },
                             {
@@ -1285,7 +1286,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 15:14:13",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/1.0.0",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             },
                             {
@@ -1293,7 +1294,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-12 02:02:22",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/0.9.0",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["*"]
                             }
                         ]
@@ -1318,7 +1319,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "date": "2014-11-28 20:54:15",
                                 "url": "https://codeload.github.com/packagecontrol-test"
                                        "/package_control-tester/zip/win-1.0.2",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["windows"]
                             }
                         ]
@@ -1423,7 +1424,7 @@ class ChannelProviderTests(unittest.TestCase):
                                 "url": "https://gitlab.com/packagecontrol-test"
                                        "/package_control-tester/-/archive/win-1.0.1"
                                        "/package_control-tester-win-1.0.1.zip",
-                                "sublime_text": "<4000",
+                                "sublime_text": "<3000",
                                 "platforms": ["windows"]
                             }
                         ]

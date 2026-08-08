@@ -364,13 +364,19 @@ class ChannelProvider:
             for library in chain(*libraries_cache.values()):
                 del library['load_order']
                 for release in library['releases']:
+                    release.setdefault('platforms', ['*'])
                     release['python_versions'] = ['3.3']
+                    release.setdefault('sublime_text', '*')
                 library['releases'] = version_sort(library['releases'], 'platforms', reverse=True)
 
         else:
             libraries_cache = channel_info.get('libraries_cache', {})
 
             for library in chain(*libraries_cache.values()):
+                for release in library['releases']:
+                    release.setdefault('platforms', ['*'])
+                    release.setdefault('python_versions', ['3.3'])
+                    release.setdefault('sublime_text', '*')
                 library['releases'] = version_sort(library['releases'], 'platforms', reverse=True)
 
         # Fix any out-dated repository URLs in libraries cache
