@@ -19,3 +19,9 @@ BB_PASS = os.environ.get('BB_PASS', '')
 USER_AGENT = 'Package Control %s Unittests' % __version__
 
 DEBUG = False
+
+TEST_REPOSITORY_URL = (
+    "https://raw.githubusercontent.com/wbond/package_control"
+    "/master/package_control/tests/repositories/"
+)
+"""URL to repository with test data (channels, repositories)"""
