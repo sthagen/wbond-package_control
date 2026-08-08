@@ -2,8 +2,8 @@
 import unittest
 
 from ..http_cache import HttpCache
-from ..providers import json_repository_provider
-from ..providers.json_repository_provider import JsonRepositoryProvider
+from ..providers import repository_provider
+from ..providers.repository_provider import RepositoryProvider
 from ._data_decorator import data_decorator, data
 
 from ._config import (
@@ -22,11 +22,11 @@ from ._config import (
 
 # prevent optimizations when running tests those
 # filter out required results for platform independent tests.
-json_repository_provider.IS_ST = False
+repository_provider.IS_ST = False
 
 
 @data_decorator
-class JsonRepositoryProviderTests(unittest.TestCase):
+class RepositoryProviderTests(unittest.TestCase):
     maxDiff = None
 
     def settings(self, extra=None):
@@ -413,7 +413,7 @@ class JsonRepositoryProviderTests(unittest.TestCase):
         first_param_name_suffix=True
     )
     def get_libraries(self, extra_settings, url, result):
-        provider = JsonRepositoryProvider(url, self.settings(extra_settings))
+        provider = RepositoryProvider(url, self.settings(extra_settings))
         self.assertEqual(result, list(provider.get_libraries()))
 
     @data(
@@ -1517,5 +1517,5 @@ class JsonRepositoryProviderTests(unittest.TestCase):
         first_param_name_suffix=True
     )
     def get_packages(self, url, result):
-        provider = JsonRepositoryProvider(url, self.settings())
+        provider = RepositoryProvider(url, self.settings())
         self.assertEqual(result, list(provider.get_packages()))

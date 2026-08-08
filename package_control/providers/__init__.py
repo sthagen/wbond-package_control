@@ -1,16 +1,16 @@
-from .bitbucket_repository_provider import BitBucketRepositoryProvider
-from .github_repository_provider import GitHubRepositoryProvider
-from .gitlab_repository_provider import GitLabRepositoryProvider
-from .json_repository_provider import JsonRepositoryProvider
+from .bitbucket_provider import BitBucketProvider
+from .github_provider import GitHubProvider
+from .gitlab_provider import GitLabProvider
+from .repository_provider import RepositoryProvider
 
 from .channel_provider import ChannelProvider
 
 
 REPOSITORY_PROVIDERS = [
-    BitBucketRepositoryProvider,
-    GitHubRepositoryProvider,
-    GitLabRepositoryProvider,
-    JsonRepositoryProvider,
+    BitBucketProvider,
+    GitHubProvider,
+    GitLabProvider,
+    RepositoryProvider,
 ]
 
 CHANNEL_PROVIDERS = [ChannelProvider]

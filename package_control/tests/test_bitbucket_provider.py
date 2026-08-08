@@ -2,7 +2,7 @@
 import unittest
 
 from ..http_cache import HttpCache
-from ..providers.bitbucket_repository_provider import BitBucketRepositoryProvider
+from ..providers.bitbucket_provider import BitBucketProvider
 from ._data_decorator import data_decorator, data
 
 from ._config import (
@@ -16,7 +16,7 @@ from ._config import (
 
 
 @data_decorator
-class BitBucketRepositoryProviderTests(unittest.TestCase):
+class BitBucketProviderTests(unittest.TestCase):
     maxDiff = None
 
     def settings(self):
@@ -45,24 +45,24 @@ class BitBucketRepositoryProviderTests(unittest.TestCase):
         )
     )
     def match_url(self, url, result):
-        self.assertEqual(result, BitBucketRepositoryProvider.match_url(url))
+        self.assertEqual(result, BitBucketProvider.match_url(url))
 
     def test_get_libraries(self):
-        provider = BitBucketRepositoryProvider(
+        provider = BitBucketProvider(
             "https://bitbucket.org/wbond/package_control-tester",
             self.settings()
         )
         self.assertEqual([], list(provider.get_libraries()))
 
     def test_get_broken_libraries(self):
-        provider = BitBucketRepositoryProvider(
+        provider = BitBucketProvider(
             "https://bitbucket.org/wbond/package_control-tester",
             self.settings()
         )
         self.assertEqual([], list(provider.get_broken_libraries()))
 
     def test_get_packages(self):
-        provider = BitBucketRepositoryProvider(
+        provider = BitBucketProvider(
             "https://bitbucket.org/wbond/package_control-tester",
             self.settings()
         )
@@ -97,21 +97,21 @@ class BitBucketRepositoryProviderTests(unittest.TestCase):
         )
 
     def test_get_broken_packages(self):
-        provider = BitBucketRepositoryProvider(
+        provider = BitBucketProvider(
             "https://bitbucket.org/wbond/package_control-tester",
             self.settings()
         )
         self.assertEqual([], list(provider.get_broken_packages()))
 
     def test_get_renamed_packages(self):
-        provider = BitBucketRepositoryProvider(
+        provider = BitBucketProvider(
             "https://bitbucket.org/wbond/package_control-tester",
             self.settings()
         )
         self.assertEqual({}, provider.get_renamed_packages())
 
     def test_get_sources(self):
-        provider = BitBucketRepositoryProvider(
+        provider = BitBucketProvider(
             "https://bitbucket.org/wbond/package_control-tester",
             self.settings()
         )

@@ -1,13 +1,13 @@
 from ..clients.bitbucket_client import BitBucketClient
 from ..downloaders.downloader_exception import DownloaderException
-from .base_repository_provider import BaseRepositoryProvider
+from .base_provider import BaseProvider
 from .provider_exception import (
     GitProviderDownloadInfoException,
     GitProviderRepoInfoException,
 )
 
 
-class BitBucketRepositoryProvider(BaseRepositoryProvider):
+class BitBucketProvider(BaseProvider):
     """
     Allows using a public BitBucket repository as the source for a single package.
     For legacy purposes, this can also be treated as the source for a Package

@@ -1,4 +1,4 @@
-class BaseRepositoryProvider:
+class BaseProvider:
     """
     Base repository downloader that fetches package info
 

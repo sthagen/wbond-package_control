@@ -2,7 +2,7 @@
 import unittest
 
 from ..http_cache import HttpCache
-from ..providers.gitlab_repository_provider import GitLabRepositoryProvider
+from ..providers.gitlab_provider import GitLabProvider
 from ._data_decorator import data_decorator, data
 
 from ._config import (
@@ -14,7 +14,7 @@ from ._config import (
 
 
 @data_decorator
-class GitLabRepositoryProviderTests(unittest.TestCase):
+class GitLabProviderTests(unittest.TestCase):
     maxDiff = None
 
     def settings(self):
@@ -43,24 +43,24 @@ class GitLabRepositoryProviderTests(unittest.TestCase):
         )
     )
     def match_url(self, url, result):
-        self.assertEqual(result, GitLabRepositoryProvider.match_url(url))
+        self.assertEqual(result, GitLabProvider.match_url(url))
 
     def test_get_libraries(self):
-        provider = GitLabRepositoryProvider(
+        provider = GitLabProvider(
             "https://gitlab.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
         self.assertEqual([], list(provider.get_libraries()))
 
     def test_get_broken_libraries(self):
-        provider = GitLabRepositoryProvider(
+        provider = GitLabProvider(
             "https://gitlab.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
         self.assertEqual([], list(provider.get_broken_libraries()))
 
     def test_get_packages(self):
-        provider = GitLabRepositoryProvider(
+        provider = GitLabProvider(
             "https://gitlab.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
@@ -98,21 +98,21 @@ class GitLabRepositoryProviderTests(unittest.TestCase):
         )
 
     def test_get_broken_packages(self):
-        provider = GitLabRepositoryProvider(
+        provider = GitLabProvider(
             "https://gitlab.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
         self.assertEqual([], list(provider.get_broken_packages()))
 
     def test_get_renamed_packages(self):
-        provider = GitLabRepositoryProvider(
+        provider = GitLabProvider(
             "https://gitlab.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
         self.assertEqual({}, provider.get_renamed_packages())
 
     def test_get_sources(self):
-        provider = GitLabRepositoryProvider(
+        provider = GitLabProvider(
             "https://gitlab.com/packagecontrol-test/package_control-tester",
             self.settings()
         )

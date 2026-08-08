@@ -2,7 +2,7 @@
 import unittest
 
 from ..http_cache import HttpCache
-from ..providers.github_repository_provider import GitHubRepositoryProvider
+from ..providers.github_provider import GitHubProvider
 from ._data_decorator import data_decorator, data
 
 from ._config import (
@@ -16,7 +16,7 @@ from ._config import (
 
 
 @data_decorator
-class GitHubRepositoryProviderTests(unittest.TestCase):
+class GitHubProviderTests(unittest.TestCase):
     maxDiff = None
 
     def settings(self):
@@ -46,24 +46,24 @@ class GitHubRepositoryProviderTests(unittest.TestCase):
         )
     )
     def match_url(self, url, result):
-        self.assertEqual(result, GitHubRepositoryProvider.match_url(url))
+        self.assertEqual(result, GitHubProvider.match_url(url))
 
     def test_get_libraries(self):
-        provider = GitHubRepositoryProvider(
+        provider = GitHubProvider(
             "https://github.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
         self.assertEqual([], list(provider.get_libraries()))
 
     def test_get_broken_libraries(self):
-        provider = GitHubRepositoryProvider(
+        provider = GitHubProvider(
             "https://github.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
         self.assertEqual([], list(provider.get_broken_libraries()))
 
     def test_get_packages(self):
-        provider = GitHubRepositoryProvider(
+        provider = GitHubProvider(
             "https://github.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
@@ -100,21 +100,21 @@ class GitHubRepositoryProviderTests(unittest.TestCase):
         )
 
     def test_get_broken_packages(self):
-        provider = GitHubRepositoryProvider(
+        provider = GitHubProvider(
             "https://github.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
         self.assertEqual([], list(provider.get_broken_packages()))
 
     def test_get_renamed_packages(self):
-        provider = GitHubRepositoryProvider(
+        provider = GitHubProvider(
             "https://github.com/packagecontrol-test/package_control-tester",
             self.settings()
         )
         self.assertEqual({}, provider.get_renamed_packages())
 
     def test_get_sources(self):
-        provider = GitHubRepositoryProvider(
+        provider = GitHubProvider(
             "https://github.com/packagecontrol-test/package_control-tester",
             self.settings()
         )

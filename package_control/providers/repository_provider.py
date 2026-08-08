@@ -9,7 +9,7 @@ from ..clients.pypi_client import PyPiClient
 from ..download_manager import http_get, resolve_url, resolve_urls, update_url
 from ..downloaders.downloader_exception import DownloaderException
 from ..package_version import version_sort
-from .base_repository_provider import BaseRepositoryProvider
+from .base_provider import BaseProvider
 from .provider_exception import (
     InvalidLibraryReleaseKeyError,
     InvalidPackageReleaseKeyError,
@@ -27,7 +27,7 @@ except ImportError:
     IS_ST = False
 
 
-class JsonRepositoryProvider(BaseRepositoryProvider):
+class RepositoryProvider(BaseProvider):
     """
     Generic repository downloader that fetches package info
 
