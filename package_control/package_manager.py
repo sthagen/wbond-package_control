@@ -1,8 +1,6 @@
 import datetime
 import hashlib
 import json
-# To prevent import errors in thread with datetime
-import locale  # noqa
 import os
 import re
 import shutil
