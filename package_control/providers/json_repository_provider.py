@@ -3,7 +3,6 @@ from itertools import chain
 from urllib.parse import urlparse
 
 from ..clients.bitbucket_client import BitBucketClient
-from ..clients.client_exception import ClientException
 from ..clients.github_client import GitHubClient
 from ..clients.gitlab_client import GitLabClient
 from ..clients.pypi_client import PyPiClient
@@ -11,7 +10,12 @@ from ..download_manager import http_get, resolve_url, resolve_urls, update_url
 from ..downloaders.downloader_exception import DownloaderException
 from ..package_version import version_sort
 from .base_repository_provider import BaseRepositoryProvider
-from .provider_exception import ProviderException
+from .provider_exception import (
+    InvalidLibraryReleaseKeyError,
+    InvalidPackageReleaseKeyError,
+    InvalidRepoFileException,
+    ProviderException,
+)
 from .schema_version import SchemaVersion
 
 try:
@@ -21,27 +25,6 @@ try:
 except ImportError:
     # running on CLI or server
     IS_ST = False
-
-
-class InvalidRepoFileException(ProviderException):
-    def __init__(self, repo, reason_message):
-        super().__init__(
-            'Repository {} does not appear to be a valid repository file because'
-            ' {}'.format(repo.repo_url, reason_message))
-
-
-class InvalidLibraryReleaseKeyError(ProviderException):
-    def __init__(self, repo, name, key):
-        super().__init__(
-            'Invalid or missing release-level key "{}" in library "{}"'
-            ' in repository "{}".'.format(key, name, repo))
-
-
-class InvalidPackageReleaseKeyError(ProviderException):
-    def __init__(self, repo, name, key):
-        super().__init__(
-            'Invalid or missing release-level key "{}" in package "{}"'
-            ' in repository "{}".'.format(key, name, repo))
 
 
 class JsonRepositoryProvider(BaseRepositoryProvider):
@@ -98,7 +81,7 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
         try:
             self.repo_info = self.fetch_repo(self.repo_url)
             self.schema_version = self.repo_info['schema_version']
-        except (DownloaderException, ClientException, ProviderException) as e:
+        except DownloaderException as e:
             self.failed_sources[self.repo_url] = e
             self.libraries = {}
             self.packages = {}
@@ -170,7 +153,7 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
             for include in resolve_urls(self.repo_url, includes):
                 try:
                     include_info = self.fetch_repo(include)
-                except (DownloaderException, ClientException, ProviderException) as e:
+                except DownloaderException as e:
                     self.failed_sources[include] = e
                 else:
                     include_version = include_info['schema_version']
@@ -455,7 +438,7 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
                 output[info['name']] = info
                 yield info
 
-            except (DownloaderException, ClientException, ProviderException) as e:
+            except DownloaderException as e:
                 self.broken_libriaries[info['name']] = e
 
         self.libraries = output
@@ -568,7 +551,7 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
                     # from the GitHub or BitBucket API
                     info = dict(chain(repo_info.items(), info.items()))
 
-                except (DownloaderException, ClientException, ProviderException) as e:
+                except DownloaderException as e:
                     if 'name' in info:
                         self.broken_packages[info['name']] = e
                     self.failed_sources[details] = e
@@ -854,7 +837,7 @@ class JsonRepositoryProvider(BaseRepositoryProvider):
                 output[info['name']] = info
                 yield info
 
-            except (DownloaderException, ClientException, ProviderException) as e:
+            except DownloaderException as e:
                 self.broken_packages[info['name']] = e
 
         self.packages = output

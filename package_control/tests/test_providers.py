@@ -3,12 +3,13 @@
 import unittest
 
 from ..http_cache import HttpCache
+from ..providers import json_repository_provider
 from ..providers.bitbucket_repository_provider import BitBucketRepositoryProvider
-from ..providers.channel_provider import ChannelProvider, InvalidChannelFileException
+from ..providers.channel_provider import ChannelProvider
 from ..providers.github_repository_provider import GitHubRepositoryProvider
 from ..providers.gitlab_repository_provider import GitLabRepositoryProvider
 from ..providers.json_repository_provider import JsonRepositoryProvider
-from ..providers import json_repository_provider
+from ..providers.provider_exception import InvalidChannelFileException
 from ._data_decorator import data_decorator, data
 
 from ._config import (

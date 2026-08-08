@@ -3,20 +3,11 @@ from itertools import chain
 
 from ..download_manager import http_get, resolve_urls, update_url
 from ..package_version import version_sort
-from .provider_exception import ProviderException
+from .provider_exception import (
+    InvalidChannelFileException,
+    UncachedChannelRepositoryError
+)
 from .schema_version import SchemaVersion
-
-
-class InvalidChannelFileException(ProviderException):
-
-    def __init__(self, channel, reason_message):
-        super().__init__(
-            'Channel %s does not appear to be a valid channel file because'
-            ' %s' % (channel.channel_url, reason_message))
-
-
-class UncachedChannelRepositoryError(ProviderException):
-    pass
 
 
 class ChannelProvider:

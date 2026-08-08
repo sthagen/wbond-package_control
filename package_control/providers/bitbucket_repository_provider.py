@@ -1,11 +1,9 @@
 from ..clients.bitbucket_client import BitBucketClient
-from ..clients.client_exception import ClientException
 from ..downloaders.downloader_exception import DownloaderException
 from .base_repository_provider import BaseRepositoryProvider
 from .provider_exception import (
     GitProviderDownloadInfoException,
     GitProviderRepoInfoException,
-    ProviderException,
 )
 
 
@@ -129,6 +127,6 @@ class BitBucketRepositoryProvider(BaseRepositoryProvider):
             self.packages = {name: details}
             yield details
 
-        except (DownloaderException, ClientException, ProviderException) as e:
+        except DownloaderException as e:
             self.failed_sources[self.repo_url] = e
             self.packages = {}

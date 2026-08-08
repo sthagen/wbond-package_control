@@ -24,7 +24,6 @@ from . import __version__
 from . import library, pep440, sys_path
 from .cache import clear_cache, set_cache, get_cache, merge_cache_under_settings, set_cache_under_settings
 from .clear_directory import clear_directory, delete_directory
-from .clients.client_exception import ClientException
 from .console_write import console_write
 from .download_manager import http_get
 from .downloaders.downloader_exception import DownloaderException
@@ -44,7 +43,6 @@ from .package_io import (
 from .package_version import PackageVersion, version_sort
 from .providers import channel_provider_for, repo_provider_for
 from .providers.channel_provider import UncachedChannelRepositoryError
-from .providers.provider_exception import ProviderException
 from .selectors import is_compatible_version, is_compatible_platform, get_compatible_platform
 from .settings import load_list_setting, pc_settings_filename
 from .upgraders.git_upgrader import GitUpgrader
@@ -577,7 +575,7 @@ class PackageManager:
                         list_=True
                     )
 
-                except (DownloaderException, ClientException, ProviderException) as e:
+                except DownloaderException as e:
                     console_write(e)
                     continue
 

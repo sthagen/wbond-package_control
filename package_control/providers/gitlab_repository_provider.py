@@ -1,13 +1,11 @@
 import re
 
-from ..clients.client_exception import ClientException
 from ..clients.gitlab_client import GitLabClient
 from ..downloaders.downloader_exception import DownloaderException
 from .base_repository_provider import BaseRepositoryProvider
 from .provider_exception import (
     GitProviderDownloadInfoException,
     GitProviderRepoInfoException,
-    ProviderException,
 )
 
 
@@ -137,6 +135,6 @@ class GitLabRepositoryProvider(BaseRepositoryProvider):
             self.packages = {name: details}
             yield details
 
-        except (DownloaderException, ClientException, ProviderException) as e:
+        except DownloaderException as e:
             self.failed_sources[self.repo_url] = e
             self.packages = {}
