@@ -4,7 +4,6 @@ from ..clients.bitbucket_client import BitBucketClient
 from ..clients.github_client import GitHubClient
 from ..clients.gitlab_client import GitLabClient
 from ..clients.pypi_client import PyPiClient
-from ..clients.readme_client import ReadmeClient
 from ..http_cache import HttpCache
 from ._data_decorator import data_decorator, data
 
@@ -143,18 +142,6 @@ class BitBucketClientTests(unittest.TestCase):
     def test_user_info(self):
         client = BitBucketClient(self.settings())
         self.assertEqual(None, client.user_info("https://bitbucket.org/wbond"))
-
-    def test_readme(self):
-        client = ReadmeClient(self.settings())
-        self.assertEqual(
-            {
-                "filename": "readme.md",
-                "contents": "# Package Control Tester\n\nThis repo is used to test the various "
-                            "clients and providers that are part of\nPackage Control.\n",
-                "format": "markdown"
-            },
-            client.readme_info("https://bitbucket.org/wbond/package_control-tester/raw/master/readme.md")
-        )
 
     @data(
         (
@@ -475,20 +462,6 @@ class GitHubClientTests(unittest.TestCase):
                 "default_branch": "master"
             }],
             client.user_info("https://github.com/packagecontrol-test")
-        )
-
-    def test_readme(self):
-        client = ReadmeClient(self.settings())
-        self.assertEqual(
-            {
-                "filename": "readme.md",
-                "contents": "# Package Control Tester\n\nThis repo is used to test the "
-                            "various clients and providers that are part of\nPackage Control.\n",
-                "format": "markdown"
-            },
-            client.readme_info(
-                "https://raw.githubusercontent.com/packagecontrol-test/package_control-tester/master/readme.md"
-            )
         )
 
     @data(
@@ -915,21 +888,6 @@ class GitLabClientTests(unittest.TestCase):
             ],
             client.user_info(
                 "https://gitlab.com/packagecontrol-test"
-            )
-        )
-
-    def test_readme(self):
-        client = ReadmeClient(self.settings())
-        self.assertEqual(
-            {
-                "filename": "readme.md",
-                "contents":
-                    "# Package Control Tester\n\nThis repo is used to test the "
-                    "various clients and providers that are part of\nPackage Control.\n",
-                "format": "markdown"
-            },
-            client.readme_info(
-                "https://gitlab.com/packagecontrol-test/package_control-tester/-/raw/master/readme.md"
             )
         )
 
