@@ -1,10 +1,9 @@
-import re
-import os
 import base64
+import os
+import re
 from urllib.parse import urlencode
 
 from .json_api_client import JSONApiClient
-
 
 # Used to map file extensions to formats
 _readme_formats = {

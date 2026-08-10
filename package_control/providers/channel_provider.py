@@ -3,10 +3,7 @@ from itertools import chain
 
 from ..download_manager import http_get, resolve_urls, update_url
 from ..package_version import version_sort
-from .provider_exception import (
-    InvalidChannelFileException,
-    UncachedChannelRepositoryError
-)
+from .provider_exception import InvalidChannelFileException, UncachedChannelRepositoryError
 from .schema_version import SchemaVersion
 
 
