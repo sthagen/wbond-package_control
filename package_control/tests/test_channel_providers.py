@@ -8,8 +8,6 @@ from ._data_decorator import data_decorator, data
 
 from ._config import (
     DEBUG,
-    GH_PASS,
-    GH_USER,
     TEST_REPOSITORY_URL,
     USER_AGENT,
 )
@@ -25,9 +23,6 @@ class ChannelProviderTests(unittest.TestCase):
             "cache": HttpCache(604800),
             "cache_length": 604800,
             "user_agent": USER_AGENT,
-            "http_basic_auth": {
-                "raw.githubusercontent.com": [GH_USER, GH_PASS],
-            }
         }
 
     def test_get_packages_12(self):
