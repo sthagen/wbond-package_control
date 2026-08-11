@@ -356,7 +356,7 @@ class BitBucketClient(JSONApiClient):
                     if entry['path'].lower() in _readme_filenames:
                         return 'https://bitbucket.org/{}/raw/{}/{}'.format(user_repo, branch, entry['path'])
 
-                listing_url = root_dir_info['next'] if 'next' in root_dir_info else None
+                listing_url = root_dir_info.get('next', None)
 
         except (DownloaderException) as e:
             if 'HTTP error 404' not in str(e):
