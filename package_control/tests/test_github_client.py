@@ -150,24 +150,6 @@ class GitHubClientTests(unittest.TestCase):
             client.repo_info("https://github.com/packagecontrol-test/package_control-tester")
         )
 
-    def test_user_info(self):
-        client = GitHubClient(self.settings())
-        self.assertEqual(
-            [{
-                "name": "package_control-tester",
-                "description": "A test of Package Control upgrade messages with "
-                               "explicit versions, but date-based releases.",
-                "homepage": "https://github.com/packagecontrol-test/package_control-tester",
-                "author": "packagecontrol-test",
-                "readme": "https://raw.githubusercontent.com/packagecontrol-test"
-                          "/package_control-tester/master/readme.md",
-                "issues": "https://github.com/packagecontrol-test/package_control-tester/issues",
-                "donate": None,
-                "default_branch": "master"
-            }],
-            client.user_info("https://github.com/packagecontrol-test")
-        )
-
     @data(
         (
             (

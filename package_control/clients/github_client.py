@@ -401,45 +401,6 @@ class GitHubClient(JSONApiClient):
 
         return self._extract_repo_info(branch, repo_info)
 
-    def user_info(self, url):
-        """
-        Retrieve general information about all repositories that are
-        part of a user/organization.
-
-        :param url:
-            The URL to the user/organization, in the following form:
-              https://github.com/{user}
-
-        :raises:
-            DownloaderException: when there is an error downloading
-            ClientException: when there is an error parsing the response
-
-        :return:
-            None if no match, or am list of dicts with the following keys:
-              `name`
-              `description`
-              `homepage` - URL of the homepage
-              `author`
-              `readme` - URL of the readme
-              `issues` - URL of bug tracker
-              `donate` - URL of a donate page
-              `default_branch`
-        """
-
-        user_match = re.match(r'https?://github\.com/([^/#?]+)/?$', url)
-        if user_match is None:
-            return None
-
-        user = user_match.group(1)
-        api_url = 'https://api.github.com/users/%s/repos' % user
-
-        repos_info = self.fetch_json(api_url)
-
-        return [
-            self._extract_repo_info(info.get('default_branch', 'master'), info)
-            for info in repos_info
-        ]
-
     def _extract_repo_info(self, branch, result):
         """
         Extracts information about a repository from the API result

@@ -149,10 +149,6 @@ class BitBucketClientTests(unittest.TestCase):
             client.repo_info("https://bitbucket.org/wbond/package_control-tester")
         )
 
-    def test_user_info(self):
-        client = BitBucketClient(self.settings())
-        self.assertEqual(None, client.user_info("https://bitbucket.org/wbond"))
-
     @data(
         (
             (

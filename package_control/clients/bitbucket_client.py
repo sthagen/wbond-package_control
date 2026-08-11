@@ -278,19 +278,6 @@ class BitBucketClient(JSONApiClient):
             'default_branch': branch
         }
 
-    def user_info(self, url):
-        """
-        For API compatibility with other clients.
-
-        :param url:
-            The URL to the repository, in one of the forms:
-              https://bitbucket.org/{user}
-
-        :return:
-            None
-        """
-        return None
-
     def _make_download_info(self, user_repo, ref_name, version, timestamp):
         """
         Generate a download_info record
