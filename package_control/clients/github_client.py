@@ -470,12 +470,15 @@ class GitHubClient(JSONApiClient):
         if result['has_issues']:
             issues_url = 'https://github.com/%s/issues' % user_repo
 
+        is_client = self.settings.get('min_api_calls', False)
+        readme_url = None if is_client else self._readme_url(user_repo, branch)
+
         return {
             'name': repo_name,
             'description': result['description'] or 'No description provided',
             'homepage': result['homepage'] or result['html_url'],
             'author': user_name,
-            'readme': self._readme_url(user_repo, branch),
+            'readme': readme_url,
             'issues': issues_url,
             'donate': None,
             'default_branch': branch
