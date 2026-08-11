@@ -66,7 +66,7 @@ class BitBucketClient(JSONApiClient):
             The repository URL of given owner and repo name
         """
 
-        return 'https://bitbucket.com/%s/%s' % (quote(user_name), quote(repo_name))
+        return 'https://bitbucket.com/{}/{}'.format(quote(user_name), quote(repo_name))
 
     def download_info(self, url, tag_prefix=None):
         """
@@ -129,7 +129,7 @@ class BitBucketClient(JSONApiClient):
         if not repo_name:
             return None
 
-        user_repo = "%s/%s" % (user_name, repo_name)
+        user_repo = "{}/{}".format(user_name, repo_name)
 
         if branch is None:
             branch = default_branch
@@ -137,7 +137,7 @@ class BitBucketClient(JSONApiClient):
                 repo_info = self.fetch_json(self._api_url(user_repo))
                 branch = repo_info['mainbranch'].get('name', 'master')
 
-        branch_url = self._api_url(user_repo, '/refs/branches/%s' % branch)
+        branch_url = self._api_url(user_repo, '/refs/branches/{}'.format(branch))
         branch_info = self.fetch_json(branch_url)
 
         timestamp = branch_info['target']['date'][0:19].replace('T', ' ')
@@ -190,7 +190,7 @@ class BitBucketClient(JSONApiClient):
         def _get_releases(user_repo, tag_prefix, page_size=100):
             used_versions = set()
             query_string = urlencode({'pagelen': page_size})
-            tags_url = self._api_url(user_repo, '/refs/tags?%s' % query_string)
+            tags_url = self._api_url(user_repo, '/refs/tags?{}'.format(query_string))
             while tags_url:
                 tags_json = self.fetch_json(tags_url)
                 for tag in tags_json['values']:
@@ -251,14 +251,14 @@ class BitBucketClient(JSONApiClient):
         if not repo_name:
             return None
 
-        user_repo = "%s/%s" % (user_name, repo_name)
+        user_repo = "{}/{}".format(user_name, repo_name)
         api_url = self._api_url(user_repo)
         repo_info = self.fetch_json(api_url)
 
         if branch is None:
             branch = repo_info['mainbranch'].get('name', 'master')
 
-        issues_url = 'https://bitbucket.org/%s/issues' % user_repo
+        issues_url = 'https://bitbucket.org/{}/issues'.format(user_repo)
 
         author = repo_info['owner'].get('nickname')
         if author is None:
@@ -306,7 +306,7 @@ class BitBucketClient(JSONApiClient):
         """
 
         return {
-            'url': 'https://bitbucket.org/%s/get/%s.zip' % (user_repo, ref_name),
+            'url': 'https://bitbucket.org/{}/get/{}.zip'.format(user_repo, ref_name),
             'version': version,
             'date': timestamp
         }
@@ -325,7 +325,7 @@ class BitBucketClient(JSONApiClient):
             The API URL
         """
 
-        return 'https://api.bitbucket.org/2.0/repositories/%s%s' % (user_repo, suffix)
+        return 'https://api.bitbucket.org/2.0/repositories/{}{}'.format(user_repo, suffix)
 
     def _readme_url(self, user_repo, branch):
         """
@@ -346,7 +346,7 @@ class BitBucketClient(JSONApiClient):
             The URL to the readme file, or None
         """
 
-        listing_url = self._api_url(user_repo, '/src/%s/?pagelen=100' % branch)
+        listing_url = self._api_url(user_repo, '/src/{}/?pagelen=100'.format(branch))
 
         try:
             while listing_url:
@@ -354,7 +354,7 @@ class BitBucketClient(JSONApiClient):
 
                 for entry in root_dir_info['values']:
                     if entry['path'].lower() in _readme_filenames:
-                        return 'https://bitbucket.org/%s/raw/%s/%s' % (user_repo, branch, entry['path'])
+                        return 'https://bitbucket.org/{}/raw/{}/{}'.format(user_repo, branch, entry['path'])
 
                 listing_url = root_dir_info['next'] if 'next' in root_dir_info else None
 
