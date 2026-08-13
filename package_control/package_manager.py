@@ -8,7 +8,6 @@ import tempfile
 import time
 import traceback
 import zipfile
-
 from concurrent import futures
 from functools import partial
 from io import BytesIO
@@ -18,9 +17,14 @@ from urllib.parse import urlencode
 
 import sublime
 
-from . import __version__
-from . import library, pep440, sys_path
-from .cache import clear_cache, set_cache, get_cache, merge_cache_under_settings, set_cache_under_settings
+from . import __version__, library, pep440, sys_path
+from .cache import (
+    clear_cache,
+    get_cache,
+    merge_cache_under_settings,
+    set_cache,
+    set_cache_under_settings,
+)
 from .clear_directory import clear_directory, delete_directory
 from .console_write import console_write
 from .download_manager import http_get
@@ -28,8 +32,8 @@ from .downloaders.downloader_exception import DownloaderException
 from .package_io import (
     create_empty_file,
     get_installed_package_path,
-    get_package_dir,
     get_package_cache_dir,
+    get_package_dir,
     get_package_module_cache_dir,
     list_sublime_package_dirs,
     list_sublime_package_files,
@@ -40,12 +44,15 @@ from .package_io import (
 )
 from .package_version import PackageVersion, version_sort
 from .providers import channel_provider_for, repo_provider_for
-from .providers.channel_provider import UncachedChannelRepositoryError
-from .selectors import is_compatible_version, is_compatible_platform, get_compatible_platform
+from .providers.provider_exception import UncachedChannelRepositoryError
+from .selectors import (
+    get_compatible_platform,
+    is_compatible_platform,
+    is_compatible_version,
+)
 from .settings import load_list_setting, pc_settings_filename
 from .upgraders.git_upgrader import GitUpgrader
 from .upgraders.hg_upgrader import HgUpgrader
-
 
 DEFAULT_CHANNEL = 'https://packagecontrol.io/channel_v3.json'
 OLD_DEFAULT_CHANNELS = set([

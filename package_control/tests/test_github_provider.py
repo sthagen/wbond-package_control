@@ -30,7 +30,6 @@ class GitHubProviderTests(unittest.TestCase):
             "user_agent": USER_AGENT,
             "http_basic_auth": {
                 "api.github.com": [GH_USER, GH_PASS],
-                "raw.githubusercontent.com": [GH_USER, GH_PASS],
             }
         }
 
