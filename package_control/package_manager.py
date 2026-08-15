@@ -45,13 +45,6 @@ from .settings import load_list_setting, pc_settings_filename
 from .upgraders.git_upgrader import GitUpgrader
 from .upgraders.hg_upgrader import HgUpgrader
 
-DEFAULT_CHANNEL = 'https://packagecontrol.io/channel_v3.json'
-OLD_DEFAULT_CHANNELS = set([
-    'https://packagecontrol.io/channel.json',
-    'https://sublime.wbond.net/channel.json',
-    'https://sublime.wbond.net/repositories.json'
-])
-
 ZIP_UNIX_SYSTEM = 3
 
 

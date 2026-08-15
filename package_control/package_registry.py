@@ -10,6 +10,13 @@ from .providers import channel_provider_for, repo_provider_for
 from .providers.provider_exception import ProviderException
 from .selectors import is_compatible_platform, is_compatible_python, is_compatible_version
 
+DEFAULT_CHANNEL = "https://packagecontrol.io/channel_v3.json"
+OLD_DEFAULT_CHANNELS = {
+    "https://packagecontrol.io/channel.json",
+    "https://sublime.wbond.net/channel.json",
+    "https://sublime.wbond.net/repositories.json",
+}
+
 STATE_IDLE = 0
 STATE_FETCHING = 1
 STATE_FETCHED = 2
@@ -111,7 +118,15 @@ class PackageRegistry:
                 ),
             )
 
+        found_default = False
+
         for url in reversed(self.settings.get("channels", [])):
+            if url in OLD_DEFAULT_CHANNELS:
+                if found_default:
+                    continue
+                found_default = True
+                url = DEFAULT_CHANNEL
+
             provider = channel_provider_for(update_url(url, False), self.settings)
             if provider:
                 providers.append(provider)
