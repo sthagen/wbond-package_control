@@ -14,27 +14,26 @@ The easiest way to install is ...
 3. Hit <kbd>Enter</kbd>.
 
 > [!WARNING]
->
 > 1. Package Control 3.4.1 is installed up to ST4200,
-> 	 which may fail loading on some modern OSs
-> 	 if required OpenSSL 1.1.1 libraries are missing.
-> 
-> 	 If that happens, please follow the manual install steps.
+>    which may fail loading on some modern OSs
+>    if required OpenSSL 1.1.1 libraries are missing.
 >
-> 2. Run _Package Control: Upgrade/Overwrite All_
+>    If that happens, please follow the manual install steps.
+>
+> 2. Run *Package Control: Upgrade/Overwrite All*
 >    or restart Sublime Text to update to Package Control 4.
 
 ### Manual Install
 
 1. Open Sublime Text's console.
+
 2. Paste and run the following script:
 
-    ```py
-    from urllib.request import urlretrieve; urlretrieve(url="https://download.sublimetext.com/Package%20Control.sublime-package", filename=sublime.installed_packages_path() + '/Package Control.sublime-package')
-    ```
+   ```py
+   from urllib.request import urlretrieve; urlretrieve(url="https://download.sublimetext.com/Package%20Control.sublime-package", filename=sublime.installed_packages_path() + '/Package Control.sublime-package')
+   ```
 
 > [!NOTE]
->
 > Package Control.sublime-package is exactly the same 
 > as if it were downloaded by the installer.
 
