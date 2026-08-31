@@ -1,6 +1,6 @@
 # Package Control
 
-The [Sublime Text](http://www.sublimetext.com) package manager. 
+The [Sublime Text](http://www.sublimetext.com) package manager.
 It allows users to find, install, and keep packages up to date.
 
 ## Installation
@@ -59,7 +59,24 @@ or community driven documentation at https://docs.sublimetext.io.
 
 ## Bug Reports
 
-If you find a bug with Package Control, please follow the directions at https://packagecontrol.io/docs/issues to submit an issue.
+1. Make sure latest version of Package Control is installed
+
+   - open `Command Palette`
+   - run `Package Control: List Packages` command
+   - search `Package Control`
+
+2. Look at Sublime Text Console (ctrl+`) to see if any python errors are listed
+3. Review the list of open GitHub issues to see if the problem has already been reported
+4. Please do not comment on a closed issue, but feel free to reference it from a new one
+
+To provide the info necessary to help solve the issue, please generate a debug log. To do this:
+
+1. Open _Preferences > Package Settings > Package Control > Settings – User_
+2. Add "debug": true to enable the debug log
+3. Restart Sublime Text
+4. Perform the command or operation you are having trouble with
+5. Copy the full contents of the Sublime Text Console
+6. Comment on an existing open issue, or create a new one
 
 ## License
 
