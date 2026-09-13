@@ -58,7 +58,7 @@ class RecordInfo:
     This class describes a the content of a /RECORD line.
     """
 
-    __slots__ = ["relative_path", "absolute_path", "size", "sha256"]
+    __slots__ = ["absolute_path", "relative_path", "sha256", "size"]
 
     def __init__(self, rel_path, abs_path, size, sha256):
         self.relative_path = rel_path.replace("\\", "/")
@@ -100,7 +100,7 @@ class DistInfoDir:
     operations required to read or write meta data of a library.
     """
 
-    __slots__ = ["install_root", "dir_name"]
+    __slots__ = ["dir_name", "install_root"]
 
     def __init__(self, install_root, dist_info_dir):
         """
@@ -157,7 +157,7 @@ class DistInfoDir:
         """
 
         if python_version is not None and python_version not in ("3.3", "3.8", "3.13", "3.14"):
-            raise ValueError("Invalid python_version %s" % repr(python_version))
+            raise ValueError("Invalid python_version {}".format(repr(python_version)))
 
         version_tag = "py3"
         if python_version is not None:
@@ -169,24 +169,24 @@ class DistInfoDir:
             if sys.platform == "darwin":
                 arch = os.uname()[4]
                 if python_version == "3.3":
-                    arch_tag = "macosx_10_7_%s" % arch
+                    arch_tag = "macosx_10_7_{}".format(arch)
                 elif python_version == "3.8":
-                    arch_tag = "macosx_10_9_%s" % arch
+                    arch_tag = "macosx_10_9_{}".format(arch)
                 elif python_version == "3.13" or python_version == "3.14":
-                    arch_tag = "macosx_10_13_%s" % arch
+                    arch_tag = "macosx_10_13_{}".format(arch)
             elif sys.platform == "linux":
-                arch_tag = "linux_%s" % os.uname()[4]
+                arch_tag = "linux_{}".format(os.uname()[4])
             else:
                 if sys.maxsize == 2147483647:
                     arch_tag = "win32"
                 else:
                     arch_tag = "win_amd64"
-        tag = "%s-%s-%s" % (version_tag, abi_tag, arch_tag)
+        tag = "{}-{}-{}".format(version_tag, abi_tag, arch_tag)
 
         output = "Wheel-Version: 1.0\n"
-        output += "Generator: Package Control (%s)\n" % pc_version
+        output += "Generator: Package Control ({})\n".format(pc_version)
         output += "Root-Is-Purelib: true\n"
-        output += "Tag: %s\n" % tag
+        output += "Tag: {}\n".format(tag)
         return output
 
     def generate_metadata(self, name, version, desc, homepage):
@@ -207,12 +207,12 @@ class DistInfoDir:
         """
 
         output = "Metadata-Version: 2.1\n"
-        output += "Name: %s\n" % name
-        output += "Version: %s\n" % version
+        output += "Name: {}\n".format(name)
+        output += "Version: {}\n".format(version)
         if isinstance(desc, str):
-            output += "Summary: %s\n" % desc.replace("\n", " ")
+            output += "Summary: {}\n".format(desc.replace("\n", " "))
         if isinstance(homepage, str):
-            output += "Home-page: %s\n" % homepage
+            output += "Home-page: {}\n".format(homepage)
 
         return output
 
@@ -239,7 +239,7 @@ class DistInfoDir:
 
         # make sure not to add duplicate entries
         with open(record, "r", encoding="utf-8") as fobj:
-            items = [item for item in fobj.readlines() if not item.startswith(installer)]
+            items = [item for item in fobj if not item.startswith(installer)]
             items.append(installer + "sha256=Hg_Q6w_I4zpFfb6C24LQdd4oTAMHJZDk9gtuV2yOgkw,16\n")
 
         with open(record, "w", encoding="utf-8", newline="\n") as fobj:
@@ -269,7 +269,7 @@ class DistInfoDir:
             with open(fpath, "rb") as f:
                 digest = hashlib.sha256(f.read()).digest()
                 sha = base64.urlsafe_b64encode(digest).rstrip(b"=")
-            return (_unix_path(rel_path), "sha256=%s" % sha.decode("utf-8"), str(size))
+            return (_unix_path(rel_path), "sha256={}".format(sha.decode("utf-8")), str(size))
 
         for fname in os.listdir(self.path):
             rel_path = os.path.join(self.dir_name, fname)
@@ -365,7 +365,7 @@ class DistInfoDir:
 
         with open(self.abs_path("METADATA"), "r", encoding="utf-8") as fobj:
             entries = {}
-            for line in fobj.readlines():
+            for line in fobj:
                 try:
                     key, value = line.split(": ", 1)
                     entries[key.strip().lower()] = value.strip()
@@ -426,14 +426,14 @@ class DistInfoDir:
 
         with open(self.abs_path("RECORD"), "r", encoding="utf-8") as fobj:
             entries = []
-            for line in fobj.readlines():
+            for line in fobj:
                 line = line.strip()
                 elements = line.split(",")
                 if len(elements) != 3:
-                    raise ValueError("Invalid record entry: %s" % line)
+                    raise ValueError("Invalid record entry: {}".format(line))
                 is_record_path = elements[0] == self.dir_name + "/RECORD" or elements[0] == self.dir_name + "\\RECORD"
                 if not elements[1].startswith("sha256=") and not is_record_path:
-                    raise ValueError("Unabled to parse sha256 hash: %s" % line)
+                    raise ValueError("Unabled to parse sha256 hash: {}".format(line))
                 ri = RecordInfo(
                     elements[0],
                     sys_path.longpath(os.path.join(self.install_root, elements[0])),
@@ -459,8 +459,7 @@ class DistInfoDir:
             else:
                 level = ri.relative_path.count("/")
 
-            if level < min_level:
-                min_level = level
+            min_level = min(min_level, level)
 
             path_seg = ri.relative_path
             if level > min_level:
@@ -515,7 +514,7 @@ class DistInfoDir:
 
         with open(self.abs_path("WHEEL"), "r", encoding="utf-8") as fobj:
             entries = {}
-            for line in fobj.readlines():
+            for line in fobj:
                 key, value = line.split(": ")
                 entries[key.strip().lower()] = value.strip()
             return entries
@@ -556,7 +555,7 @@ class DistInfoDir:
 
         for specifier in version_specifier.split(","):
             if not pep440.check_version(specifier, python_version):
-                raise EnvironmentError(
+                raise OSError(
                     'The library "{}" is not compatible with Python {}'.format(metadata["name"], python_version)
                 )
 
